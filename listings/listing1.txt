@@ -1,0 +1,19 @@
+class PostController extends Zend_Controller_Action
+{
+    public function voteAction()
+    {
+        $postId = $this->request->getParam('id');
+        $rating = $this->request->getParam('rating');
+
+        $client = new Predis\Client();
+        $post = $client->get('post_'.$postId);
+        if (!$post) {
+            throw new Exception('Post does not exist');
+        }
+
+        $post->addVote($rating);
+        $client->set('post_'.$postId, $post);
+
+        $this->redirect('/post/'.$postId);
+    }
+}
