@@ -9,9 +9,9 @@ how to build testable, infrastructure agnostic apps.
 
 It?s monday morning, another sprint is starting and you
 are reviewing some user stories with your team and your
-Product Owner. ?As a not logged user, I want to vote a
-post and notify the author via email.?, that?s a really
-cool feature, isn?t it? You?ll start your day with that one.
+Product Owner. "As a not logged user, I want to vote a
+post and notify the author via email.", that's a really
+cool feature, isn't it? You'll start your day with that one.
 
 ## First approach
 
