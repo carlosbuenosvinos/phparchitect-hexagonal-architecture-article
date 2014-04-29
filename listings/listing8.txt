@@ -9,15 +9,21 @@ class SqlitePostRepository implements PostRepository
 
     public function find($id)
     {
-        $postRow = @$this->client->query(
+        $row = @$this->client->query(
             'SELECT * FROM posts WHERE id = '.$id
         );
-        $post = $client->get('post_'.$postId);
-        if (!$post) {
+
+        if (!$postRow) {
             return null;
         }
 
-        return $post;
+        return new Post(
+            $row['id'],
+            $row['title'],
+            $row['author'],
+            $row['rating'],
+            $row['votes'],
+        );
     }
 
     public function save($post)
