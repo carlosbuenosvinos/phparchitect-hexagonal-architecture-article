@@ -7,7 +7,7 @@ This is the case of CQRS, Event Sourcing or **Hexagonal
 Architecture** (aka. Ports and Adapters). Let's check
 how to build testable, infrastructure agnostic apps.
 
-It?s monday morning, another sprint is starting and you
+It's monday morning, another sprint is starting and you
 are reviewing some user stories with your team and your
 Product Owner. "As a not logged user, I want to vote a
 post and notify the author via email.", that's a really
@@ -15,8 +15,8 @@ cool feature, isn't it? You'll start your day with that one.
 
 ## First approach
 
-Your company web is still using a ZF1 app (don't laugh)
-so after some hours of work you get something like:
+Your company web is still ZF1 (don't laugh) so after some
+ hours of work you get something like:
 
 ~~~~
 ...
@@ -25,16 +25,16 @@ public function voteAction()
     $postId = $this->request->getParam('id');
     $rating = $this->request->getParam('rating');
 
-    $post = PostDAO::find($postId);
+    $client = new Predis\Client();
+    $post = $client->get('post_'.$postId);
     if (!$post) {
         throw new Exception('Post does not exist');
     }
 
     $post->addVote($rating);
+    $client->set('post_'.$postId, $post);
 
-    $client = new Predis\Client();
-    $client->set('post_'.$postId, 'bar');
-
+    
 
 }
 ...
