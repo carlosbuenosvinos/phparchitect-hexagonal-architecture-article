@@ -9,39 +9,64 @@ how to build testable, infrastructure agnostic apps.
 
 It's monday morning, another sprint is starting and you
 are reviewing some user stories with your team and your
-Product Owner. "As a not logged user, I want to vote a
-post and notify the author via email.", that's a really
-cool feature, isn't it? You'll start your day with that one.
+Product Owner. "As a not logged user, I want to rate a
+post and the author should be notified via email.",
+that's a really cool feature to add into your blog
+system, isn't it?
 
 ## First approach
 
-Let's start with "I want to vote a post". Your company
- web is still using ZF1. After some time you get
- something like Listing 1.
+Let's start with "I want to rate a post".
 
-[First approach](listings/listing1.txt)
+In terms of business rules, rating a post is as easy
+as finding the post by id in the post repository,
+where all the posts live, add the rating,
+recalculate the average and save the post.
 
-Mmmm, ok, it works. However, all your business logic is
-inside a controller action mixed with infrastructure
-(Redis and SwiftMailer). You shouldn't touch this code if
+If the post does not exist or the repository is not
+available we should throw an exception and our _delivery
+method_[1] should behave accordingly.
+
+Your company web application is using Zend Framework 1
+and MySQL. After some time working you get something
+like Listing 1.
+
+[Listing 1](listings/listing1.txt)
+
+I know what you are thinking: "Who does not use an". If
+you are already using repositories (handmade, doctrine,
+zend db, etc.) nice. Just in case, for newbies,
+
+Mmmm, ok, it works. However, all your business
+ logic is
+inside a controller action mixed with infrastructure. You
+ shouldn't touch this code if
  you want to change _notification_ library. _Persistence_
   neither.
+
+
+Maybe, your code is not connecting
+
+This is not going to change. It's not
+related with what database we are using
 
 Believe it or not, one day you will have to change your
 framework or the libraries you are using for a specific
 task.
 
-[Defining persistence](listings/listing2.txt)
+[Listing 2](listings/listing2.txt)
 
 What about moving all that logic, inside a class for doing
 that. Can I call it a Service?
 
 
-This service is a special one. It is the entry point for your application, not your framework, so some guys call it Application Service, Interactor or Use Case. Do you remember when you were at University?
+This service is a special one. It is the entry point for
+your application, not your framework, so some guys call it
+Application Service, Interactor or Use Case.
+Do you remember when you were at University?
 
-
-That?s pure business logic. A UseCase object, there is nothing related to databases, frameworks and so on. Cool.
-
+That's pure business logic. A UseCase object,
+there is nothing related to databases, frameworks and so on. Cool.
 
 ## Rating a post using the API
 
@@ -61,10 +86,34 @@ ignorant as possible about how it is to be delivered. You
  without undue complication or change to the fundamental
  architecture".
 
-Your current API is a Silex <http://silex.sensiolabs.org/>
-application.
+Your current API is built using Silex <http://silex
+.sensiolabs.org/>
 
-[Voting using the API](listings/listing6.txt)
+[Voting using the API](listings/silex-api.txt)
+
+"Man! I remember those 4 lines of code. They look exactly
+the same as the web application". That's right,
+because the use case and the business rules remains the
+same, the code to run the business logic should be the same.
+We are just providing our users another way for rating a
+post, what it's called another _delivery method_.
+
+The main difference is how we have created the
+`VotePostRequest` from. On the first
+example, it was from a ZF request and now from a Silex
+request.
+
+## Console app rating
+
+While you are testing this feature using the web or the api,
+ you realize that it would be nice to have a command line
+ to do it, so you'll be faster. Maybe you can thing about
+  a cronjob.
+
+Your current API is built using Silex <http://silex
+.sensiolabs.org/>
+
+[Rating console command](listings/symfony-console.txt)
 
 Man! I remember those 4 lines of code. They look exactly
 the same as the web application. That's right,
@@ -75,13 +124,12 @@ have created the `VotePostRequest` from. On the first
 example, it was from a ZF request and now from a Silex
 request.
 
-
-
-
+## Testing your code
 
 Tomorrow, what about moving from MySQL to Redis?
 
-During the same sprint, your architect comes to you and says: ?what about moving the voting story to redis? Could you do it for this sprint??, ?Yep, no problem!?. Man, you are on fire.
+During the same sprint, your architect comes to you and says:
+?what about moving the voting story to redis? Could you do it for this sprint??, ?Yep, no problem!?. Man, you are on fire.
 
 <Code for the new Adapter>
 
@@ -89,10 +137,13 @@ During the same sprint, your architect comes to you and says: ?what about moving
 
 Michael Feathers introduced a definition of legacy code
 as _code without tests_. You don't want your code to be
-legacy just born.
+legacy just born, do you?
 
+[VotePostUseCaseTestCase](listings/usecase-test.txt)
 
-Bam! 100% Coverage. Maybe, next time we can do it using TDD so the test will come first.
+Bam! 100% Coverage. Maybe, next time we can do it using
+TDD so the test will come first. However,
+testing this feature was really easy.
 
 ## Arggg, so many dependencies!
 
@@ -101,6 +152,7 @@ Is that normal that I have so many dependencies to create by hand?
 Yes, it is. Service Container
 
 ## Migrating to new framework
+
 
 
 ## Who I have to thank?
