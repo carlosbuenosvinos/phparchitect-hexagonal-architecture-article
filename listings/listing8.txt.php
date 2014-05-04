@@ -1,3 +1,4 @@
+<?php
 class SqlitePostRepository implements PostRepository
 {
     private $client;
@@ -22,7 +23,7 @@ class SqlitePostRepository implements PostRepository
             $row['title'],
             $row['author'],
             $row['rating'],
-            $row['votes'],
+            $row['votes']
         );
     }
 

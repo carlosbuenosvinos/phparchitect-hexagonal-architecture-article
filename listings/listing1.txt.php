@@ -1,3 +1,5 @@
+<?php
+
 class PostController extends Zend_Controller_Action
 {
     public function voteAction()
@@ -15,5 +17,14 @@ class PostController extends Zend_Controller_Action
         $client->set('post_'.$postId, $post);
 
         $this->redirect('/post/'.$postId);
+    }
+
+    private function pp()
+    {
+        $db = new mysqli('localhost', 'root', '', 'blog');
+        $stmt = $db->prepare('SELECT * FROM posts WHERE id = ?');
+        $stmt->bind_param('i', $postId);
+        $stmt->execute();
+        $db->query('');
     }
 }
