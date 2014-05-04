@@ -1,7 +1,7 @@
 # Hexagonal Architecture with PHP
 ###### by Carlos Buenosvinos
 
-> With the rise of DDD and Software Craftsmanship movement,
+> With the rise of DDD,
 architectures that promote domain centric designs are
 getting more popular. This is the case of **Hexagonal
 Architecture**, also known as **Ports and Adapters**,
@@ -12,18 +12,19 @@ the Hexagonal Architecture allows an application to
 equally be driven by users, programs, automated test or
 batch scripts, and to be developed and tested in
 isolation from its eventual run-time devices and
-databases. That means, agnostic infrastructure apps easier
- to test, write and maintain. Let's see how to apply it
+databases. That means, agnostic infrastructure web
+applications that are easier to test,
+to write and to maintain. Let's see how to apply it
 using real PHP examples.
 
 It's monday morning, another sprint is starting and you
 are reviewing some user stories with your team and your
 Product Owner. "As a not logged user, I want to rate a
-post and the author should be notified via email.",
+post and the author should be notified by email.",
 that's a really cool feature to add into your blog
 system, isn't it?
 
-## First approach
+## Let's start
 
 Let's start with "I want to rate a post".
 
