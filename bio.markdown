@@ -1,15 +1,7 @@
 > ### Biography
-> Carlos Buenosvinos is a PHP Barcelona User Group founder.
- He works as CTO at @atrapalo, the
-
-You can follow him on Twitter (@buenosvinos) or github
-https://github.com/carlosbuenosvinos.
-
-CHRISTOPHER VALLES has worked as both developer
-and systems administrator. He is CTO at Familia Facil,
-a housework employment website. He currently lives in
-Barcelona, Spain, with his girlfriend and his two cats
-Schrödinger and Bones. In addition to programming, he
-enjoys cooking and television series. You can follow him
-on Twitter (@tbhot3ww) or github https://github.com/
-christophervalles.
+> CARLOS BUENOSVINOS is a PHP Extreme Programmer working as
+   CTO at Atrapalo.com and founder of the PHP Barcelona User
+   Group. He likes developing on Mobile,
+   Raspberry Pi and Games. Follow him on Twitter
+   (@buenosvinos) or GitHub
+   <https://github.com/carlosbuenosvinos>
