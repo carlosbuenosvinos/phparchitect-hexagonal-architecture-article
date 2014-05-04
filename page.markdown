@@ -13,7 +13,7 @@ equally be driven by users, programs, automated test or
 batch scripts, and to be developed and tested in
 isolation from its eventual run-time devices and
 databases. That means, agnostic infrastructure apps easier
- to test, write and mantain. Let's see how to apply it
+ to test, write and maintain. Let's see how to apply it
 using real PHP examples.
 
 It's monday morning, another sprint is starting and you
