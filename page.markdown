@@ -1,11 +1,20 @@
 # Hexagonal Architecture with PHP
 ###### by Carlos Buenosvinos
 
-> With the raise of DDD, architectures that promote
-domain centric designs are getting more popular.
-This is the case of CQRS, Event Sourcing or **Hexagonal
-Architecture** (aka. Ports and Adapters). Let's check
-how to build testable, infrastructure agnostic apps.
+> With the rise of DDD and Software Craftsmanship movement,
+architectures that promote domain centric designs are
+getting more popular. This is the case of **Hexagonal
+Architecture**, also known as **Ports and Adapters**,
+that seems to have being rediscovered just now by PHP
+developers. Invented in 2005 by Alistair Cockburn,
+one of the Agile Manifesto authors,
+the Hexagonal Architecture allows an application to
+equally be driven by users, programs, automated test or
+batch scripts, and to be developed and tested in
+isolation from its eventual run-time devices and
+databases. That means, agnostic infrastructure apps easier
+ to test, write and mantain. Let's see how to apply it
+using real PHP examples.
 
 It's monday morning, another sprint is starting and you
 are reviewing some user stories with your team and your
@@ -155,14 +164,7 @@ Yes, it is. Service Container
 
 
 
-## Who I have to thank?
 
-Alistair Cockburn invented it in 2005. It is a response
-to the desired to create thoroughly testable applications.
-As Cockburn says: "Allow an application to equally be
-driven by users, programs, automated test or batch scripts,
-and to be developed and tested in isolation from its
-eventual run-time devices and databases."
 
 
 
