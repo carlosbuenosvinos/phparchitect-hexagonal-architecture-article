@@ -17,35 +17,54 @@ applications that are easier to test,
 to write and to maintain. Let's see how to apply it
 using real PHP examples.
 
-It's monday morning, another sprint is starting and you
-are reviewing some user stories with your team and your
-Product Owner. "As a not logged user, I want to rate a
-post and the author should be notified by email.",
-that's a really cool feature to add into your blog
-system, isn't it?
+Your company is building a brainstorming system called
+_Idy_. Users add ideas and then they can be rated by
+other users to get the most interesting or exciting ones
+done. It's monday morning, another sprint is starting and
+ you are reviewing some user stories with your team and your
+Product Owner. **"As a not logged user, I want to rate an
+idea and the author should be notified by email"**,
+that's a really important feature, isn't it?
 
 ## Let's start
 
-Let's start with "I want to rate a post".
+As a good developer, you decide to divide
+and conquer the user story, so you'll start with "I
+want to rate an idea" and then face "and the author
+should be notified by email".
 
-In terms of business rules, rating a post is as easy
-as finding the post by id in the post repository,
-where all the posts live, add the rating,
-recalculate the average and save the post.
+In terms of business rules, rating an idea is as easy
+as finding the idea by id in the ideas repository,
+where all the ideas live, add the rating,
+recalculate the average and save the idea. If the idea
+does not exist or the repository is not
+available we should throw an exception.
 
-If the post does not exist or the repository is not
-available we should throw an exception and our _delivery
-method_[1] should behave accordingly.
+![Figure 1: Use case](figures/figures1.png)
 
-Your company web application is using Zend Framework 1
-and MySQL. After some time working you get something
-like Listing 1.
+In order to run or _execute_ this use case, we just
+need the idea id and the rating from the user.
+
+Your company web application is using Zend Framework 2
+and MySQL, nothing special, however it could be using an
+adhoc framework, an old open-source or the most
+brand new one. It would be exactly the same.
+
+After some time working you get something like Listing 1.
 
 [Listing 1](listings/listing1.txt)
 
-I know what you are thinking: "Who does not use an". If
-you are already using repositories (handmade, doctrine,
-zend db, etc.) nice. Just in case, for newbies,
+I know what you are thinking: "Who is going to access
+data directly from the controller? This is a 90's example",
+ok, ok, you're right. If you are already using
+repositories (handmade, doctrine, zend db,
+etc.) that's great. Just in case and only for newbies,
+those all mysql connection and query lines are asking for
+be promoted into a Repository. Repositories encapsulate
+how we find and access Entities in our domain. Let's
+see how we can do that in Listing 2.
+
+[Listing 2](listings/listing2.txt)
 
 Mmmm, ok, it works. However, all your business
  logic is
@@ -68,6 +87,8 @@ task.
 
 What about moving all that logic, inside a class for doing
 that. Can I call it a Service?
+
+Our _delivery method_ should behave accordingly.
 
 
 This service is a special one. It is the entry point for

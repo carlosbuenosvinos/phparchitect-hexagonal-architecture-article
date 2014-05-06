@@ -1,6 +1,6 @@
 <?php
 
-class PostController extends Zend_Controller_Action
+class IdeaController extends Zend_Controller_Action
 {
     public function voteAction()
     {

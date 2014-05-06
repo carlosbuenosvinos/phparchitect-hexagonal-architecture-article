@@ -1,3 +1,4 @@
+<?php
 class PostRepository
 {
     private $client;
@@ -9,17 +10,17 @@ class PostRepository
 
     public function find($id)
     {
-        $post = $client->get('post_'.$postId);
-        if (!$post) {
+        $idea = $this->client->get('idea_'.$id);
+        if (!$idea) {
             return null;
         }
 
-        return $post;
+        return $idea;
     }
 
-    public function save($post)
+    public function save($idea)
     {
-        $this->client->set('post_'.$post->getId(), $post);
+        $this->client->set('idea_'.$idea->getId(), $idea);
     }
 }
 
