@@ -1,65 +1,36 @@
-<?php
-class RedisPostRepository implements PostRepository
+namespace Blog\Console\Command;
+
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+
+class VotePostCommand extends Command
 {
-    private $client;
-
-    public function __construct()
+    protected function configure()
     {
-        $client = new Predis\Client();
-        $post = $client->get('post_'.$postId);
-        if (!$post) {
-            throw new Exception('Post does not exist');
-        }
-
-        $post->addVote($rating);
-        $client->set('post_'.$postId, $post);
-
-        $this->redirect('/post/'.$postId);
-
-         $this->client = new SQLiteDatabase('mydb');
+        $this
+            ->setName('post:rate')
+            ->setDescription('Greet someone')
+            ->addArgument('id', InputArgument::REQUIRED)
+            ->addArgument('rating', InputArgument::REQUIRED)
+        ;
     }
 
-    public function find($id)
+    protected function execute(
+        InputInterface $input,
+        OutputInterface $output
+    )
     {
-        $row = @$this->client->query(
-            'SELECT * FROM posts WHERE id = '.$id
-        );
-
-        if (!$postRow) {
-            return null;
-        }
-
-        return new Post(
-            $row['id'],
-            $row['title'],
-            $row['author'],
-            $row['rating'],
-            $row['votes']
-        );
-    }
-
-    public function save($post)
-    {
-        $this->client->set('post_'.$post->getId(), $post);
-    }
-}
-
-class PostController extends Zend_Controller_Action
-{
-    public function voteAction()
-    {
-        $postId = $this->request->getParam('id');
-        $rating = $this->request->getParam('rating');
+        $postId = $input->getArgument('id');
+        $rating = $input->getArgument('rating');
 
         $postRepository = new RedisPostRepository();
-        $post = $postRepository->find($postId);
-        if (!$post) {
-            throw new Exception('Post does not exist');
-        }
+        $useCase = new VotePostUseCase($postRepository);
+        $request = new VotePostRequest($postId, $rating);
+        $response = $useCase->execute($request);
 
-        $post->addVote($rating);
-        $postRepository->save($post);
-
-        $this->redirect('/post/'.$postId);
+        $output->writeln('Done!');
     }
 }

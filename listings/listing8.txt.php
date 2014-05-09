@@ -1,54 +1,23 @@
 <?php
-class SqlitePostRepository implements PostRepository
-{
-    private $client;
+require_once __DIR__.'/../vendor/autoload.php';
 
-    public function __construct()
-    {
-         $this->client = new SQLiteDatabase('mydb');
+$app = new Silex\Application();
+
+// ... more routes
+
+$app->post(
+    '/api/vote',
+    function(Request $request, $app) {
+        $postId = $request->get('id');
+        $rating = $request->get('rating');
+
+        $postRepository = new RedisPostRepository();
+        $useCase = new VotePostUseCase($postRepository);
+        $request = new VotePostRequest($postId, $rating);
+        $response = $useCase->execute($request);
+
+        return $app->json($response->post);
     }
+);
 
-    public function find($id)
-    {
-        $row = @$this->client->query(
-            'SELECT * FROM posts WHERE id = '.$id
-        );
-
-        if (!$postRow) {
-            return null;
-        }
-
-        return new Post(
-            $row['id'],
-            $row['title'],
-            $row['author'],
-            $row['rating'],
-            $row['votes']
-        );
-    }
-
-    public function save($post)
-    {
-        $this->client->set('post_'.$post->getId(), $post);
-    }
-}
-
-class PostController extends Zend_Controller_Action
-{
-    public function voteAction()
-    {
-        $postId = $this->request->getParam('id');
-        $rating = $this->request->getParam('rating');
-
-        $postRepository = new SqlitePostRepository();
-        $post = $postRepository->find($postId);
-        if (!$post) {
-            throw new Exception('Post does not exist');
-        }
-
-        $post->addVote($rating);
-        $postRepository->save($post);
-
-        $this->redirect('/post/'.$postId);
-    }
-}
+$app->run();

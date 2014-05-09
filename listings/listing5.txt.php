@@ -1,26 +1,41 @@
-interface PostRepository
-{
-    public function find($id);
-    public function save($post);
-}
-
+<?php
 class RedisPostRepository implements PostRepository
 {
     private $client;
 
     public function __construct()
     {
-         $this->client = new Predis\Client();
+        $client = new Predis\Client();
+        $post = $client->get('post_'.$postId);
+        if (!$post) {
+            throw new Exception('Post does not exist');
+        }
+
+        $post->addVote($rating);
+        $client->set('post_'.$postId, $post);
+
+        $this->redirect('/post/'.$postId);
+
+         $this->client = new SQLiteDatabase('mydb');
     }
 
     public function find($id)
     {
-        $post = $client->get('post_'.$postId);
-        if (!$post) {
+        $row = @$this->client->query(
+            'SELECT * FROM posts WHERE id = '.$id
+        );
+
+        if (!$postRow) {
             return null;
         }
 
-        return $post;
+        return new Post(
+            $row['id'],
+            $row['title'],
+            $row['author'],
+            $row['rating'],
+            $row['votes']
+        );
     }
 
     public function save($post)

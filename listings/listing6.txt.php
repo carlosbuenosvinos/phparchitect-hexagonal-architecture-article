@@ -1,3 +1,4 @@
+<?php
 class PostController extends Zend_Controller_Action
 {
     public function voteAction()

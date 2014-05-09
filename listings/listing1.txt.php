@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Class IdeaController
+ */
 class IdeaController extends Zend_Controller_Action
 {
     public function voteAction()

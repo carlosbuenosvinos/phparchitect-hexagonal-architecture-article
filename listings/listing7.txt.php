@@ -1,3 +1,4 @@
+<?php
 class VotePostRequest
 {
     public $postId;

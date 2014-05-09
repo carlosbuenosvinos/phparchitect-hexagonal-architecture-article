@@ -4,5 +4,4 @@
    Group. He has worked in Ecommerce, Payment processing
    and Classifieds. He likes developing on Mobile,
    Raspberry Pi and Games. Follow him on Twitter
-   (@buenosvinos) or GitHub
-   <https://github.com/carlosbuenosvinos>
+   (@buenosvinos) or GitHub <https://github.com/carlosbuenosvinos>
