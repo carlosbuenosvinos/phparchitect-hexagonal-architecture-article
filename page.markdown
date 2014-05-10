@@ -73,7 +73,8 @@ They are be asking for being a Repository.
 
 ## Repositories
 
-<Repository definition>
+Mediates between the domain and data mapping layers using a
+collection-like interface for accessing domain objects.
 
 Whether there is a change in the business rules (new steps)
 or in the infrastructure (we move to NoSQL or change
@@ -177,10 +178,10 @@ Do you remember when you were at University?
 That's pure business logic. A UseCase object,
 there is nothing related to databases, frameworks and so on. Cool.
 
-## Rating a post using the API
+## Rating a idea using the API
 
 During the day, your Product Owner comes to you and says:
- "by the way, a user should be able to rate a post using
+ "by the way, a user should be able to rate a idea using
  our mobile app. I think we will need to update the API,
  could you do it for this sprint?". Here's the PO again.
  This user story is
@@ -205,7 +206,7 @@ the same as the web application". That's right,
 because the use case and the business rules remains the
 same, the code to run the business logic should be the same.
 We are just providing our users another way for rating a
-post, what it's called another _delivery method_.
+idea, what it's called another _delivery method_.
 
 The main difference is how we have created the
 `VotePostRequest` from. On the first
@@ -252,7 +253,9 @@ Michael Feathers introduced a definition of legacy code
 as _code without tests_. You don't want your code to be
 legacy just born, do you?
 
-[VotePostUseCaseTestCase](listings/usecase-test.txt)
+
+
+[](listings/usecase-test.txt)
 
 Bam! 100% Coverage. Maybe, next time we can do it using
 TDD so the test will come first. However,

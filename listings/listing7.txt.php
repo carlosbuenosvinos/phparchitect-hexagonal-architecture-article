@@ -1,62 +1,62 @@
 <?php
-class VotePostRequest
+class VoteIdeaRequest
 {
-    public $postId;
+    public $ideaId;
     public $rating;
 
-    public function __construct($postId, $rating)
+    public function __construct($ideaId, $rating)
     {
-        $this->postId = $postId;
+        $this->ideaId = $ideaId;
         $this->rating = $rating;
     }
 }
 
-class VotePostResponse
+class VoteIdeaResponse
 {
-    public $post;
+    public $idea;
 
-    public function __construct($post)
+    public function __construct($idea)
     {
-        $this->post = $post;
+        $this->idea = $idea;
     }
 }
 
-class PostController extends Zend_Controller_Action
+class IdeaController extends Zend_Controller_Action
 {
     public function voteAction()
     {
-        $postId = $this->request->getParam('id');
+        $ideaId = $this->request->getParam('id');
         $rating = $this->request->getParam('rating');
 
-        $postRepository = new RedisPostRepository();
-        $useCase = new VotePostUseCase($postRepository);
-        $request = new VotePostRequest($postId, $rating);
+        $ideaRepository = new RedisIdeaRepository();
+        $useCase = new VoteIdeaUseCase($ideaRepository);
+        $request = new VoteIdeaRequest($ideaId, $rating);
         $response = $useCase->execute($request);
 
-        $this->redirect('/post/'.$response->post->getId());
+        $this->redirect('/idea/'.$response->idea->getId());
     }
 }
 
-class VotePostUseCase
+class VoteIdeaUseCase
 {
-    private $postRepository;
+    private $ideaRepository;
 
-    public function __construct($postRepository)
+    public function __construct($ideaRepository)
     {
-        $this->postRepository = $postRepository;
+        $this->ideaRepository = $ideaRepository;
     }
 
     public function execute($request)
     {
-        $postId = $request->postId;
+        $ideaId = $request->ideaId;
         $rating = $request->rating;
 
-        $post = $this->postRepository->find($postId);
-        if (!$post) {
-            throw new Exception('Post does not exist');
+        $idea = $this->ideaRepository->find($ideaId);
+        if (!$idea) {
+            throw new Exception('Idea does not exist');
         }
 
-        $post->addVote($rating);
-        $this->postRepository->save($post);
+        $idea->addVote($rating);
+        $this->ideaRepository->save($idea);
     }
 }

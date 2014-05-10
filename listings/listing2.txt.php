@@ -1,22 +1,32 @@
 <?php
-class PostRepository
+
+/**
+ * Class IdeaRepository
+ */
+class IdeaRepository
 {
     private $client;
 
     public function __construct()
     {
-        $this->client = Zend_Db::factory('Pdo_Mysql', array(
-            'host'             => '127.0.0.1',
-            'username'         => 'webuser',
-            'password'         => 'xxxxxxxx',
-            'dbname'           => 'test'
+        $this->client = new Zend_Db_Adapter_Pdo_Mysql(array(
+            'host'     => 'localhost',
+            'username' => 'idy',
+            'password' => '',
+            'dbname'   => 'idy'
         ));
     }
 
+    /**
+     * Finds an idea by id
+     *
+     * @param int $id
+     * @return null|Idea
+     */
     public function find($id)
     {
-        $ideaId = $this->client->quote($id, 'INTEGER');
-        $row = $this->client->fetchRow('SELECT * FROM ideas WHERE id = '.$ideaId);
+        $sql = 'SELECT * FROM ideas WHERE idea_id = ?';
+        $row = $this->client->fetchRow($sql, $id);
         if (!$row) {
             return null;
         }
@@ -32,7 +42,11 @@ class PostRepository
         return $idea;
     }
 
-    public function save($idea)
+    /**
+     * @param Idea $idea
+     * @throws Zend_Db_Adapter_Exception
+     */
+    public function update($idea)
     {
         $data = array(
             'title' => $idea->getTitle(),
@@ -42,31 +56,30 @@ class PostRepository
             'email' => $idea->getAuthor(),
         );
 
-        if ($id = $idea->getId()) {
-            $data['id'] = $id;
-            $this->client->update('bugs', array('reported_by = ?' => $id));
-        }
-
-        $this->client->insert($data);
+        $where = array('idea_id = ?' => $idea->getId());
+        $this->client->update('ideas', $data, $where);
     }
 }
 
-class PostController extends Zend_Controller_Action
+/**
+ * Class IdeaController
+ */
+class IdeaController extends Zend_Controller_Action
 {
     public function voteAction()
     {
-        $postId = $this->request->getParam('id');
+        $ideaId = $this->request->getParam('id');
         $rating = $this->request->getParam('rating');
 
-        $postRepository = new PostRepository();
-        $post = $postRepository->find($postId);
-        if (!$post) {
-            throw new Exception('Post does not exist');
+        $ideaRepository = new IdeaRepository();
+        $idea = $ideaRepository->find($ideaId);
+        if (!$idea) {
+            throw new Exception('Idea does not exist');
         }
 
-        $post->addVote($rating);
-        $postRepository->save($post);
+        $idea->addVote($rating);
+        $ideaRepository->update($idea);
 
-        $this->redirect('/post/'.$postId);
+        $this->redirect('/idea/'.$ideaId);
     }
 }

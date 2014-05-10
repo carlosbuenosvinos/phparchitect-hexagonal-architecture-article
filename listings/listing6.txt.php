@@ -1,36 +1,44 @@
 <?php
-class PostController extends Zend_Controller_Action
+class IdeaController extends Zend_Controller_Action
 {
     public function voteAction()
     {
-        $postId = $this->request->getParam('id');
+        $ideaId = $this->request->getParam('id');
         $rating = $this->request->getParam('rating');
 
-        $postRepository = new RedisPostRepository();
-        $useCase = new VotePostUseCase($postRepository);
-        $useCase->execute($postId, $rating);
+        $ideaRepository = new MySQLIdeaRepository();
+        $useCase = new VoteIdeaUseCase($ideaRepository);
+        $useCase->execute($ideaId, $rating);
 
-        $this->redirect('/post/'.$postId);
+        $this->redirect('/idea/'.$ideaId);
     }
 }
 
-class VotePostUseCase
+class VoteIdeaUseCase
 {
-    private $postRepository;
+    private $ideaRepository;
 
-    public function __construct($postRepository)
+    /**
+     * @param IdeaRepository $ideaRepository
+     */
+    public function __construct($ideaRepository)
     {
-        $this->postRepository = $postRepository;
+        $this->ideaRepository = $ideaRepository;
     }
 
-    public function execute($postId, $rating)
+    /**
+     * @param int $ideaId
+     * @param int $rating
+     * @throws Exception
+     */
+    public function execute($ideaId, $rating)
     {
-        $post = $this->postRepository->find($postId);
-        if (!$post) {
-            throw new Exception('Post does not exist');
+        $idea = $this->ideaRepository->find($ideaId);
+        if (!$idea) {
+            throw new Exception('Idea does not exist');
         }
 
-        $post->addVote($rating);
-        $this->postRepository->save($post);
+        $idea->addRating($rating);
+        $this->ideaRepository->update($idea);
     }
 }

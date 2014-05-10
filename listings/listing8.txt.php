@@ -5,18 +5,18 @@ $app = new Silex\Application();
 
 // ... more routes
 
-$app->post(
+$app->idea(
     '/api/vote',
     function(Request $request, $app) {
-        $postId = $request->get('id');
+        $ideaId = $request->get('id');
         $rating = $request->get('rating');
 
-        $postRepository = new RedisPostRepository();
-        $useCase = new VotePostUseCase($postRepository);
-        $request = new VotePostRequest($postId, $rating);
+        $ideaRepository = new RedisIdeaRepository();
+        $useCase = new VoteIdeaUseCase($ideaRepository);
+        $request = new VoteIdeaRequest($ideaId, $rating);
         $response = $useCase->execute($request);
 
-        return $app->json($response->post);
+        return $app->json($response->idea);
     }
 );
 

@@ -1,5 +1,5 @@
 <?php
-class PostRepository
+class IdeaRepository
 {
     private $client;
 

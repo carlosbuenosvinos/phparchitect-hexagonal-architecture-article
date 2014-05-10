@@ -1,51 +1,100 @@
 <?php
+
+/**
+ * Interface IdeaRepository
+ */
 interface IdeaRepository
 {
+    /**
+     * @param int $id
+     * @return Idea
+     */
     public function find($id);
-    public function save($post);
+
+    /**
+     * @param Idea $idea
+     */
+    public function update($idea);
 }
 
-class RedisIdeaRepository implements IdeaRepository
+/**
+ * Class IdeaRepository
+ */
+class MySQLIdeaRepository implements IdeaRepository
 {
     private $client;
 
     public function __construct()
     {
-         $this->client = new Predis\Client();
+        $this->client = new Zend_Db_Adapter_Pdo_Mysql(array(
+            'host'     => 'localhost',
+            'username' => 'idy',
+            'password' => '',
+            'dbname'   => 'idy'
+        ));
     }
 
+    /**
+     * @param int $id
+     * @return Idea
+     */
     public function find($id)
     {
-        $post = $client->get('post_'.$postId);
-        if (!$post) {
+        $sql = 'SELECT * FROM ideas WHERE idea_id = ?';
+        $row = $this->client->fetchRow($sql, $id);
+        if (!$row) {
             return null;
         }
 
-        return $post;
+        $idea = new Idea();
+        $idea->setId($row['id']);
+        $idea->setTitle($row['title']);
+        $idea->setDescription($row['description']);
+        $idea->setRating($row['rating']);
+        $idea->setVotes($row['votes']);
+        $idea->setAuthor($row['email']);
+
+        return $idea;
     }
 
-    public function save($post)
+    /**
+     * @param Idea $idea
+     * @throws Zend_Db_Adapter_Exception
+     */
+    public function update($idea)
     {
-        $this->client->set('post_'.$post->getId(), $post);
+        $data = array(
+            'title' => $idea->getTitle(),
+            'description' => $idea->getDescription(),
+            'rating' => $idea->getRating(),
+            'votes' => $idea->getVotes(),
+            'email' => $idea->getAuthor(),
+        );
+
+        $where = array('idea_id = ?' => $idea->getId());
+        $this->client->update('ideas', $data, $where);
     }
 }
 
-class PostController extends Zend_Controller_Action
+/**
+ * Class IdeaController
+ */
+class IdeaController extends Zend_Controller_Action
 {
     public function voteAction()
     {
-        $postId = $this->request->getParam('id');
+        $ideaId = $this->request->getParam('id');
         $rating = $this->request->getParam('rating');
 
-        $postRepository = new RedisPostRepository();
-        $post = $postRepository->find($postId);
-        if (!$post) {
-            throw new Exception('Post does not exist');
+        $ideaRepository = new MySQLIdeaRepository();
+        $idea = $ideaRepository->find($ideaId);
+        if (!$idea) {
+            throw new Exception('Idea does not exist');
         }
 
-        $post->addVote($rating);
-        $postRepository->save($post);
+        $idea->addRating($rating);
+        $ideaRepository->update($idea);
 
-        $this->redirect('/post/'.$postId);
+        $this->redirect('/idea/'.$ideaId);
     }
 }

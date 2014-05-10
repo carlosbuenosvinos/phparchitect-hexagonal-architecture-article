@@ -1,31 +1,33 @@
 <?php
-class RedisIdeaRepository implements IdeaRepository
+class SqliteIdeaRepository implements IdeaRepository
 {
     private $client;
 
     public function __construct()
     {
-        $this->client = new \Predis\Client();
+         $this->client = new SQLiteDatabase('mydb');
     }
 
-    /**
-     * @param int $id
-     * @return null
-     */
     public function find($id)
     {
-        $idea = $this->client->get('idea_'.$id);
-        if (!$idea) {
+        $row = $this->client->query(
+            'SELECT * FROM ideas WHERE id = '.$id
+        );
+
+        if (!$ideaRow) {
             return null;
         }
 
-        return $idea;
+        return new Idea(
+            $row['id'],
+            $row['title'],
+            $row['author'],
+            $row['rating'],
+            $row['votes']
+        );
     }
 
-    /**
-     * @param Idea $idea
-     */
-    public function update($idea)
+    public function save($idea)
     {
         $this->client->set('idea_'.$idea->getId(), $idea);
     }
@@ -38,7 +40,7 @@ class IdeaController extends Zend_Controller_Action
         $ideaId = $this->request->getParam('id');
         $rating = $this->request->getParam('rating');
 
-        $ideaRepository = new RedisIdeaRepository();
+        $ideaRepository = new SqliteIdeaRepository();
         $idea = $ideaRepository->find($ideaId);
         if (!$idea) {
             throw new Exception('Idea does not exist');

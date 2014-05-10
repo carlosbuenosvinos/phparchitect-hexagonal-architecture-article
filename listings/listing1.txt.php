@@ -7,27 +7,46 @@ class IdeaController extends Zend_Controller_Action
 {
     public function voteAction()
     {
-        $postId = $this->request->getParam('id');
+        // Getting parameters from the request
+        $ideaId = $this->request->getParam('id');
         $rating = $this->request->getParam('rating');
 
-        $client = new Predis\Client();
-        $post = $client->get('post_'.$postId);
-        if (!$post) {
-            throw new Exception('Post does not exist');
+        // Building database connection
+        $db = new Zend_Db_Adapter_Pdo_Mysql(array(
+            'host'     => 'localhost',
+            'username' => 'idy',
+            'password' => '',
+            'dbname'   => 'idy'
+        ));
+
+        // Finding the idea in the database
+        $sql = 'SELECT * FROM ideas WHERE idea_id = ?';
+        $row = $db->fetchRow($sql, $ideaId);
+        if (!$row) {
+            throw new Exception('Idea does not exist');
         }
 
-        $post->addVote($rating);
-        $client->set('post_'.$postId, $post);
+        // Building the idea from the database
+        $idea = new Idea();
+        $idea->setId($row['id']);
+        $idea->setTitle($row['title']);
+        $idea->setDescription($row['description']);
+        $idea->setRating($row['rating']);
+        $idea->setVotes($row['votes']);
+        $idea->setAuthor($row['email']);
 
-        $this->redirect('/post/'.$postId);
-    }
+        // Add user rating
+        $idea->addRating($rating);
 
-    private function pp()
-    {
-        $db = new mysqli('localhost', 'root', '', 'blog');
-        $stmt = $db->prepare('SELECT * FROM posts WHERE id = ?');
-        $stmt->bind_param('i', $postId);
-        $stmt->execute();
-        $db->query('');
+        // Update the idea and save it to the database
+        $data = array(
+            'votes' => $idea->getVotes(),
+            'rating' => $idea->getRating()
+        );
+        $where['idea_id = ?'] = $ideaId;
+        $db->update('ideas', $data, $where);
+
+        // Redirect to view idea page
+        $this->redirect('/idea/'.$ideaId);
     }
 }
