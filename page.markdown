@@ -73,37 +73,44 @@ They are be asking for being a Repository.
 
 ## Repositories
 
-Mediates between the domain and data mapping layers using a
-collection-like interface for accessing domain objects.
+"Mediates between the domain and data mapping layers using a
+collection-like interface for accessing domain objects."
 
 Whether there is a change in the business rules (new steps)
 or in the infrastructure (we move to NoSQL or change
-the Database engine) we must change the same piece of code.
+the Database engine) we must edit the same piece of code.
 
 This is not the best situation possible, technically, we
 are not conforming the Single Responsability Principle (SRP). Our
-code has different reasons to be changed based on different roles
-in our application.
+code has different reasons to be changed based on your application
+different roles.
 
 So we should split our code and encapsulate the responsability to
 deal with fetching and persisting ideas into another object. The
-best way is using a Repository. Check it out at Listing 2.
+best way, as explained before, is using a Repository. Check
+it out at Listing 2.
 
 [Listing 2](listings/listing2.txt)
 
-That's better.
+That's better. The `voteAction` of the `IdeaController`
+is more understandable. When read it talks about business
+rules. `IdeaRepository` is a business concept. When talking
+with business guys they understand what an `IdeaRepository` is.
 
-For the ORM pros. If you are using Doctrine, for example, you
-must have a Repository extending.
+If you are already using an ORM such as Doctrine, you
+must have a Repository extending an `EntityRepository` that would
+be get from the `EntityManager`. The resulting code would be
+the same, except for finding in the controller action an access
+to the `EntityManager` for getting the `IdeaRepository`.
 
-Althought you use an open source ORM or you own,
+At this point, we can see in the landscape one of the edges
+of our hexagon, the _persistence_ edge. However, this side is
+not well drawn, there is still some relationship between what
+an `IdeaRepository` is and how it's implemented.
 
-
-Repositories encapsulate how we find and access
-Entities in our domain. They are the main representatives
-for the _persistence_ edge of our hexagon.
-
-We need one additional step
+In order to make this separation stronger and 100% defined
+we need an additional step. We need to explicitly decouple
+behaviour from implementation using some sort of interface.
 
 ## Decouple business and infrastructure
 
@@ -121,15 +128,11 @@ standpoint, **your infrastructure is a detail**. Business
 rules are not going to change whether you use Symfony
 or Zend Framework, MySQL or PostgreSQL, REST or SOAP, etc.
 
-
-Checking Listing 2,
-
-
+That's why it's important to decouple our IdeaRepository
+from its implementation. The easiest way is to use a proper
+interface. Let's take a look to Listing 3.
 
 [Listing 3](listings/listing3.txt)
-
-
-
 
 ## Moving to Redis or Sqlite
 
