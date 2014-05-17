@@ -16,6 +16,9 @@ class IdeaController extends Zend_Controller_Action
 
 class VoteIdeaUseCase
 {
+    /**
+     * @var IdeaRepository
+     */
     private $ideaRepository;
 
     /**
@@ -27,6 +30,8 @@ class VoteIdeaUseCase
     }
 
     /**
+     * Executes this use case
+     *
      * @param int $ideaId
      * @param int $rating
      * @throws Exception

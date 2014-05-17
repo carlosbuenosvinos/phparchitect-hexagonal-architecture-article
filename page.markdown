@@ -28,78 +28,102 @@ that's a really important feature, isn't it?
 ## First approach
 
 As a good developer, you decide to divide
-and conquer the user story, so you'll start with "I
-want to rate an idea" and then face "and the author
-should be notified by email".
+and conquer the user story, so you'll start with the
+first part, "I want to rate an idea". After that,
+you will face "the author should be notified by email".
+That sounds like a plan.
 
 In terms of business rules, rating an idea is as easy
-as finding the idea by id in the ideas repository,
-where all the ideas live, add the rating,
-recalculate the average and save the idea. If the idea
-does not exist or the repository is not
+as finding the idea by its identifier in the ideas
+repository, where all the ideas live, add the rating,
+recalculate the average and save the idea back. If
+the idea does not exist or the repository is not
 available we should throw an exception.
 
-![Figure 1: Use case](figures/figures1.png)
+![Figure 1: Use case](figures/figure1.png)
 
 In order to _execute_ this _use case_, we just
-need the idea id and the rating from the user.
+need the idea identifier and the rating from
+the user.
 
 Your company web application is dealing with a
 Zend Framework 1 legacy application. As most of
 the companies, parts of your application are
-newer, more SOLID and others just a big ball of mud.
+newer, more SOLID and others just a big ball of
+mud. It doesn't really matter what framework are
+you using, the following steps apply in the same
+way.
 
+You're trying to apply some Agile principles
+you remember from your last conference, how it was,
+yeah, I remember "make it work, make it right, make it fast".
 After some time working you get something like Listing 1.
 
 [Listing 1](listings/listing1.txt)
 
-I know what you are thinking: "Who is going to access
+I know what readers are thinking: "Who is going to access
 data directly from the controller? This is a 90's example!",
 ok, ok, you're right. If you are already using a framework,
-it's probable that you are already using an ORM. Maybe done
+it's probable that you are also using an ORM. Maybe done
 by yourself or any of the existing ones such as Doctrine,
-Eloquent, Zend\DB, etc. Carry on reading.
+Eloquent, Zend\DB, etc. If it's the case, you are one step
+further from those who have some Database connection object
+but don't be say victory yet.
 
 For newbies, Listing 1 code just works. However, if you
 take a closer look to the Controller, you'll see more
-than business rules, you'll see references to the database,
-how you connect to it using your framework... you'll see
-references to your **infrastructure**.
+than business rules, you'll also see how your web framework
+routes a request into your business rules, references to
+the database or how to connect to it. You see references
+to your **infrastructure**.
+
+Infrastructure is the **detail that makes your business rules
+work**. At last, we need some way to get to them (api, web, console
+apps, etc.) or we need some physical place to store our ideas
+(memory, database, nosql, etc.). However, we should be able to
+exchange any of these pieces with another that behaves in the
+same way but with different implementations. What about to
+starting with the Database access?
 
 All those `Zend_DB_Adapter` connection (or straight mysql commands
 if it's the case) are asking for be promoted into some sort
 of object that encapsulates fetching and persisting Idea objects.
-They are be asking for being a Repository.
+They are asking for being a Repository.
 
 ## Repositories
 
-"Mediates between the domain and data mapping layers using a
-collection-like interface for accessing domain objects."
-
-Whether there is a change in the business rules (new steps)
-or in the infrastructure (we move to NoSQL or change
+Whether there is a change in the business rules
+or in the infrastructure (migrating to NoSQL or changing
 the Database engine) we must edit the same piece of code.
+Believe, in CS, you don't want people touching the same
+piece of code for different reasons.
 
-This is not the best situation possible, technically, we
-are not conforming the Single Responsability Principle (SRP). Our
-code has different reasons to be changed based on your application
-different roles.
+If it's the case, we are technically not conforming the
+Single Responsability Principle (SRP). Our code has
+different reasons to be changed.
 
-So we should split our code and encapsulate the responsability to
-deal with fetching and persisting ideas into another object. The
-best way, as explained before, is using a Repository. Check
-it out at Listing 2.
+So we should decouple our code and encapsulate the
+responsability to deal with fetching and persisting
+ideas into another object. The best way, as explained
+before, is using a Repository. Let's see what you can do
+about it in Listing 2.
 
 [Listing 2](listings/listing2.txt)
 
-That's better. The `voteAction` of the `IdeaController`
+The result is nicer. The `voteAction` of the `IdeaController`
 is more understandable. When read it talks about business
-rules. `IdeaRepository` is a business concept. When talking
-with business guys they understand what an `IdeaRepository` is.
+rules. `IdeaRepository` is a **business concept**. When talking
+with business guys they understand what an `IdeaRepository` is:
+A place where I put Ideas and get them.
 
-If you are already using an ORM such as Doctrine, you
-must have a Repository extending an `EntityRepository` that would
-be get from the `EntityManager`. The resulting code would be
+A Repository "mediates between the domain and data mapping
+layers using a collection-like interface for accessing
+domain objects." as found in Martin Fowler patterns catalog.
+
+If you are already using an ORM such as Doctrine, your current
+repositories extend from an `EntityRepository`. If you need to
+ get one of those repositories, you ask to Doctrine
+ `EntityManager` to do the job. The resulting code would be
 the same, except for finding in the controller action an access
 to the `EntityManager` for getting the `IdeaRepository`.
 

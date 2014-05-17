@@ -5,6 +5,9 @@
  */
 class IdeaRepository
 {
+    /**
+     * @var Zend_Db_Adapter_Pdo_Mysql
+     */
     private $client;
 
     public function __construct()
@@ -43,8 +46,9 @@ class IdeaRepository
     }
 
     /**
+     * Updates an idea
+     *
      * @param Idea $idea
-     * @throws Zend_Db_Adapter_Exception
      */
     public function update($idea)
     {
