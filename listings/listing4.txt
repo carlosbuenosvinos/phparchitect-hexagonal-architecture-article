@@ -67,7 +67,7 @@ class IdeaController extends Zend_Controller_Action
             throw new Exception('Idea does not exist');
         }
 
-        $idea->addVote($rating);
+        $idea->addRating($rating);
         $ideaRepository->update($idea);
 
         $this->redirect('/idea/'.$ideaId);
