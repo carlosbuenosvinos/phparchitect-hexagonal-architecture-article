@@ -1,6 +1,29 @@
 <?php
 
 /**
+ * Class IdeaController
+ */
+class IdeaController extends Zend_Controller_Action
+{
+    public function rateAction()
+    {
+        $ideaId = $this->request->getParam('id');
+        $rating = $this->request->getParam('rating');
+
+        $ideaRepository = new MySQLIdeaRepository();
+        $idea = $ideaRepository->find($ideaId);
+        if (!$idea) {
+            throw new Exception('Idea does not exist');
+        }
+
+        $idea->addRating($rating);
+        $ideaRepository->update($idea);
+
+        $this->redirect('/idea/'.$ideaId);
+    }
+}
+
+/**
  * Interface IdeaRepository
  */
 interface IdeaRepository
@@ -26,28 +49,5 @@ interface IdeaRepository
  */
 class MySQLIdeaRepository implements IdeaRepository
 {
-    //...
-}
-
-/**
- * Class IdeaController
- */
-class IdeaController extends Zend_Controller_Action
-{
-    public function rateAction()
-    {
-        $ideaId = $this->request->getParam('id');
-        $rating = $this->request->getParam('rating');
-
-        $ideaRepository = new MySQLIdeaRepository();
-        $idea = $ideaRepository->find($ideaId);
-        if (!$idea) {
-            throw new Exception('Idea does not exist');
-        }
-
-        $idea->addRating($rating);
-        $ideaRepository->update($idea);
-
-        $this->redirect('/idea/'.$ideaId);
-    }
+    // ...
 }

@@ -1,7 +1,14 @@
 <?php
-class VoteIdeaRequest
+class RateIdeaRequest
 {
+    /**
+     * @var int
+     */
     public $ideaId;
+
+    /**
+     * @var int
+     */
     public $rating;
 
     public function __construct($ideaId, $rating)
@@ -11,11 +18,14 @@ class VoteIdeaRequest
     }
 }
 
-class VoteIdeaResponse
+class RateIdeaResponse
 {
+    /**
+     * @var Idea
+     */
     public $idea;
 
-    public function __construct($idea)
+    public function __construct(Idea $idea)
     {
         $this->idea = $idea;
     }
@@ -23,15 +33,16 @@ class VoteIdeaResponse
 
 class IdeaController extends Zend_Controller_Action
 {
-    public function voteAction()
+    public function rateAction()
     {
         $ideaId = $this->request->getParam('id');
         $rating = $this->request->getParam('rating');
 
         $ideaRepository = new RedisIdeaRepository();
         $useCase = new VoteIdeaUseCase($ideaRepository);
-        $request = new VoteIdeaRequest($ideaId, $rating);
-        $response = $useCase->execute($request);
+        $response = $useCase->execute(
+            new VoteIdeaRequest($ideaId, $rating)
+        );
 
         $this->redirect('/idea/'.$response->idea->getId());
     }
@@ -39,24 +50,13 @@ class IdeaController extends Zend_Controller_Action
 
 class VoteIdeaUseCase
 {
-    private $ideaRepository;
-
-    public function __construct($ideaRepository)
-    {
-        $this->ideaRepository = $ideaRepository;
-    }
+    // ...
 
     public function execute($request)
     {
         $ideaId = $request->ideaId;
         $rating = $request->rating;
 
-        $idea = $this->ideaRepository->find($ideaId);
-        if (!$idea) {
-            throw new Exception('Idea does not exist');
-        }
-
-        $idea->addVote($rating);
-        $this->ideaRepository->save($idea);
+        // ...
     }
 }

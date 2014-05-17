@@ -84,7 +84,7 @@ references to your **infrastructure**.
 Infrastructure is the **detail that makes your business rules
 work**. At last, we need some way to get to them (api, web, console
 apps, etc.) or we need some physical place to store our ideas
-(memory, database, nosql, etc.). However, we should be able to
+(memory, database, NoSQL, etc.). However, we should be able to
 exchange any of these pieces with another that behaves in the
 same way but with different implementations. What about
 starting with the Database access?
@@ -102,14 +102,14 @@ Believe me, in CS, you don't want people touching the same
 piece of code for different reasons. Make your functions
 do one and just one thing so it's less probable having people
 messing around with the same piece of code. You should 
-take a look to the Single Responsability Principle (SRP).
+take a look to the Single Responsibility Principle (SRP).
 
 Listing 1 is clearly this case. If we want to move to Redis
 or add the author notification feature, you'll have to update
- the `rateAction` method.
+the `rateAction` method.
 
 So, we must decouple our code and encapsulate the
-responsability to deal with fetching and persisting
+responsibility to deal with fetching and persisting
 ideas into another object. The best way, as explained
 before, is using a Repository. Challenged accepted!
 Let's see the results in Listing 2.
@@ -139,7 +139,7 @@ not well drawn, there is still some relationship between what
 an `IdeaRepository` is and how it's implemented.
 
 In order to make an effective separation between our
-_application boundary_ and the __infrastructure boundary__
+_application boundary_ and the _infrastructure boundary_
 we need an additional step. We need explicitly decouple
 behaviour from implementation using some sort of interface.
 
@@ -192,57 +192,72 @@ change what repository to use, but it was just one line
 of code.
 
 As an exercise for the reader, try to create the
-IdeaRepository for SQLite, a file or a memory
+IdeaRepository for SQLite, a file or a in-memory
 using arrays.
 
-## Decouple framework and business
+## Decouple Business and Web Framework
 
 We have seen already how easily could be changing
 from one persistence strategy to another one. However,
-the persistence is not the only edge from our hexagon.
+the persistence is not the only edge from our Hexagon.
 What about how the user interacts with the application?
+
+Your CTO has set up in the roadmap that your team is
+moving to Symfony2, so when developing new features in
+you current ZF1 application, we would like to make the
+future but immediate migration easier. That's tricky,
+show me your Listing 5.
+
+[Listing 5](listings/listing5.txt)
+
+Let's review the changes. Our controller is not having
+any business rules at all. We have push all the logic
+inside a new object called `RateIdeaUseCase` that
+encapsulates it. This object is also known as
+Controller, Interactor or Application Service.
+
+The magic is done by the `execute` method. All the
+dependencies such as the `RedisIdeaRepository` is passed
+as an argument to the constructor. All the references
+to an `IdeaRepository` inside our use case are pointing
+to the interface not to any of the concrete implementation.
+
+That's really cool. If you take a look inside `RateIdeaUseCase`,
+there is nothing talking about MySQL or Zend Framework.
+No references, no instances, no annotations, nothing. Is
+like your infrastructure doesn't mind. It just talks about
+business logic.
+
+Additionally, we have also tune the Exceptions we throw.
+Business processes has also exceptions. NotAvailableRepository
+and IdeaDoesNotExist are. Based on the one thrown we can
+react in different ways in the framework boundary.
+
+Sometimes, the number of parameters that a use case
+receives can be too many. In order to organize them,
+it's quite common to build a _use case request_
+using a Data Transfer Object (DTO) to pass them together.
+Let's see how you could solve this in Listing 6.
 
 [Listing 6](listings/listing6.txt)
 
-Sometimes, the number of parameters that a use case
-recieves can be long. In order to organize them, it's
-quite common to use a Data Transfer Object (DTO) to
-pass the message from the framework to the use case.
+The main changes here are introducing two new objects, a
+Request and a Response. It's not mandatory, maybe a use
+case has no request or response. Another important detail
+is how you build this request. In this case, we are building
+it getting the parameters from ZF request object.
 
-[Listing 7](listings/listing7.txt)
-
-Maybe, your code is not connecting
-
-This is not going to change. It's not
-related with what database we are using
-
-Believe it or not, one day you will have to change your
-framework or the libraries you are using for a specific
-task.
-
-What about moving all that logic, inside a class for doing
-that. Can I call it a Service?
-
-Our _delivery mechanism_ should behave accordingly.
-
-
-This service is a special one. It is the entry point for
-your application, not your framework, so some guys call it
-Application Service, Interactor or Use Case.
-Do you remember when you were at University?
-
-That's pure business logic. A UseCase object,
-there is nothing related to databases, frameworks and so on. Cool.
+Ok, but wait, what's the real benefit? It's easier to change
+from one framework to other, or execute our use case from
+another _delivery mechanism_. Let's see this point.
 
 ## Rating a idea using the API
 
 During the day, your Product Owner comes to you and says:
- "by the way, a user should be able to rate a idea using
+ "by the way, a user should be able to rate an idea using
  our mobile app. I think we will need to update the API,
  could you do it for this sprint?". Here's the PO again.
- This user story is
- "No problem!".
- Business is really happy with you. Keep going!
+ "No problem!". Business is impressed with your commitment.
 
 As Robert C. Martin says: "The Web is a delivery
 mechanism [...] Your system architecture should be as
@@ -252,8 +267,7 @@ ignorant as possible about how it is to be delivered. You
  without undue complication or change to the fundamental
  architecture".
 
-Your current API is built using Silex <http://silex
-.sensiolabs.org/>
+Your current API is built using Silex
 
 [Voting using the API](listings/silex-api.txt)
 
@@ -331,20 +345,21 @@ Yes, it is. Service Container
 ## Migrating to new framework
 
 
+## Netx steps
+
+DDD, leaking, factory, etc.
+
 
 
 ## Let's recap
 
 We encapsulate a user story business rules inside a
-Use Case or Interactor. We build
-the Use Case request from our framework request,
- instantiate the Use Case and all its dependencies
- and then execute it. If our framework has a Dependency Injection
- component you can use it to simplify the code
+Use Case or Interactor. We build the Use Case request
+from our framework request, instantiate the Use Case
+and all its dependencies and then execute it.
+If our framework has a Dependency Injection component
+you can use it to simplify the code.
 
-nothing special, however it could be using an
-adhoc framework, an old open-source or the most
-brand new one. It would be exactly the same.
 
 
 Let?s review

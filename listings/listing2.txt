@@ -1,6 +1,29 @@
 <?php
 
 /**
+ * Class IdeaController
+ */
+class IdeaController extends Zend_Controller_Action
+{
+    public function rateAction()
+    {
+        $ideaId = $this->request->getParam('id');
+        $rating = $this->request->getParam('rating');
+
+        $ideaRepository = new IdeaRepository();
+        $idea = $ideaRepository->find($ideaId);
+        if (!$idea) {
+            throw new Exception('Idea does not exist');
+        }
+
+        $idea->addRating($rating);
+        $ideaRepository->update($idea);
+
+        $this->redirect('/idea/'.$ideaId);
+    }
+}
+
+/**
  * Class IdeaRepository
  */
 class IdeaRepository
@@ -60,28 +83,5 @@ class IdeaRepository
 
         $where = array('idea_id = ?' => $idea->getId());
         $this->client->update('ideas', $data, $where);
-    }
-}
-
-/**
- * Class IdeaController
- */
-class IdeaController extends Zend_Controller_Action
-{
-    public function rateAction()
-    {
-        $ideaId = $this->request->getParam('id');
-        $rating = $this->request->getParam('rating');
-
-        $ideaRepository = new IdeaRepository();
-        $idea = $ideaRepository->find($ideaId);
-        if (!$idea) {
-            throw new Exception('Idea does not exist');
-        }
-
-        $idea->addRating($rating);
-        $ideaRepository->update($idea);
-
-        $this->redirect('/idea/'.$ideaId);
     }
 }
