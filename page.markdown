@@ -139,7 +139,7 @@ an `IdeaRepository` is and how it's implemented.
 In order to make an effective separation between our
 _application boundary_ and the _infrastructure boundary_
 we need an additional step. We need explicitly decouple
-behaviour from implementation using some sort of interface.
+behavior from implementation using some sort of interface.
 
 ## Decoupling Business and Persistence
 
@@ -164,7 +164,7 @@ interface. How could we that? Let's take a look to Listing 3.
 [Listing 3](listings/listing3.txt)
 
 Easy, isn't it? We have extracted the `IdeaRepository`
-behaviour into an interface, rename the IdeaRepository into
+behavior into an interface, rename the IdeaRepository into
 `MySQLIdeaRepository` and update the `rateAction` to 
 use our `MySQLIdeaRepository`. But what's the benefit?
 
@@ -330,13 +330,13 @@ legacy just born, do you?
 In order to test this UseCase object, you decide to
 start with the easiest part, what happen if the
 repository is not available? How can we generate such a
-behaviour? Do we stop our Redis server while running
+behavior? Do we stop our Redis server while running
 the unit tests? No. We need to have an object that
-has such behaviour. Let's use a _mock_ object in Listing 9.
+has such behavior. Let's use a _mock_ object in Listing 9.
 
 [Listing 9](listings/listing9.txt)
 
-Nice. `NotAvailableRepository` has the behaviour
+Nice. `NotAvailableRepository` has the behavior
 that we need and we can use it with `RateIdeaUseCase`
 because implements `IdeaRepository` interface.
 
