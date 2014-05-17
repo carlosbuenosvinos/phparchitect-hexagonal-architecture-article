@@ -298,7 +298,7 @@ request using `$request` object.
 ## Console app rating
 
 Sometimes, some use case is going to be executed from
-a cronjob o command line. As an example, batch processing
+a Cron job o command line. As an example, batch processing
 or some testing command lines for accelerating the
 development.
 
@@ -382,7 +382,7 @@ $this->updateCalled = true;
 We need a way to guarantee that the update method
 has being called during the use case execution. This
 makes the trick. This _test double_ object is called a
-_spy_, cousin of _mocks_.
+_spy_, _mocks_ cousin.
 
 When to use mocks? As a general rule, use mocks
 when crossing boundaries. In this case, we need mocks
@@ -424,47 +424,83 @@ and having fun doing asserts.
 ## Arggg, so many dependencies!
 
 Is that normal that I have so many dependencies
-to create by hand? No. 
+to create by hand? No. It's common to use a Dependency
+Injection component or a Service Container with
+such capabilities. Again, Symfony comes to the rescue,
+however, you can also check PHP-DI 4 <http://php-di.org/>.
 
-Yes, it is. Service Container
+Let's see the resulting code in Listing 14 after applying
+Symfony Service Container component to our application.
 
+[Listing 14](listings/listing14.txt)
 
-## Recommended Path structure
+The controller has being modified to have access to 
+the container, that's why is inheriting from a new
+base controller `ContainerAwareController` that has a
+`get` method to retrieve each of services contained.
 
-Is that normal that I have so many dependencies to create by hand?
+In Listing 14, you can also find the XML file used
+to configure the Service Container. It's really easy
+to understand but if you need more information, take
+a look to the Symfony Service Container Component
+site in <http://symfony.com/doc/current/book/service_container.html>
 
-Yes, it is. Service Container
+## Messaging hexagon edge
 
+Are we forgetting anything? "the author should be
+notified by email", yeah! That's true. Let's see
+in Listing 15 how we have updated the UseCase for
+doing the job.
 
-## How can I apply it to existing code
+As you realize, we have added a new parameter for
+passing a Service that will send the email to the
+author. This is the `port` in the "Ports and Adapters"
+naming. We have also update the business rules in
+the `execute` method.
 
-"Be refactor my friend".
+[Listing 15](listings/listing14.txt)
 
-## Migrating to new framework
-
-
-
-## Next steps
-
-DDD, leaking, factory, etc.
-
-
+As an exercise, define the implementation details
+for the AuthorNotifier abstract service. In this case,
+this service will have business rules implementation
+and everything related to the infrastructure will
+be abstract so you can add the _adapter_. Options are
+SwiftMailer o just plain `mail` calls. It's up to you.
 
 ## Let's recap
 
+In order to have a _clean architecture_ that helps you
+to create easy to write and test applications, we can
+use Hexagonal Architecture. For doing that, we encapsulate
+a user story business rules inside a Use Case or Interactor
+object. We build the Use Case request from our framework
+request, instantiate the Use Case and all its dependencies
+and then execute it. We get the response and act accordingly
+based on it. If our framework has a Dependency Injection
+component you can use it to simplify the code.
 
-We encapsulate a user story business rules inside a
-Use Case or Interactor. We build the Use Case request
-from our framework request, instantiate the Use Case
-and all its dependencies and then execute it.
-If our framework has a Dependency Injection component
-you can use it to simplify the code.
+The same use case objects can be used from different
+_delivery mechanisms_ in order to allow user to access
+the features from different clients (web, api, console, etc.)
 
+For testing, play with mocks that behaves like all
+the interfaces defined so special cases or error flows
+can be also covered. Go home and enjoy.
 
+## Key points
 
-Different clients (web, api, console)
-Infrastructure (Database, Framework, etc.) agnostic
+Use this approach if 100% unit test code coverage
+is important to your application. Also, if you want to
+be able to switch your storage strategy, or any other
+type of third-party code. The architecture is especially
+useful for long-lasting applications that need to keep
+up with changing requirements.
 
-When should you use it?
-If 100% unit-test code coverage is important to your application. Also, if you want to be able to switch your storage mechanism, or any other type of third-party code. The architecture is especially useful for long-lasting applications that need to keep up with changing requirements.
+## What's next?
 
+If you are interested in learning more about Hexagonal
+Architecture and other near concepts you should take
+a look to CQRS and Event Sourcing. Don't forget also
+to subscribe to google groups and RSS about DDD such
+as <http://dddinphp.org> and follow on Twitter people
+like @VaughnVernon, @ericevans0 and @mathiasverraes.
