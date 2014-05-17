@@ -1,0 +1,45 @@
+<?php
+
+class RedisIdeaRepository implements IdeaRepository
+{
+    private $client;
+
+    public function __construct($client)
+    {
+        $this->client = $client
+    }
+
+    // ...
+
+    public function find($id)
+    {
+        $idea = $this->client->get($this->getKey($id));
+        if (!$idea) {
+            return null;
+        }
+
+        return $idea;
+    }
+}
+
+class IdeaController extends Zend_Controller_Action
+{
+    public function rateAction()
+    {
+        $ideaId = $this->request->getParam('id');
+        $rating = $this->request->getParam('rating');
+
+        $useCase = new VoteIdeaUseCase(
+            new RedisIdeaRepository(
+                new \Predis\Connection()
+            )
+        );
+
+        $response = $useCase->execute(
+            new VoteIdeaRequest($ideaId, $rating)
+        );
+
+        $this->redirect('/idea/'.$response->idea->getId());
+    }
+}
+

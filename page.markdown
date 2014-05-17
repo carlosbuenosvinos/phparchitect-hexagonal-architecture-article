@@ -43,8 +43,6 @@ available we should throw an exception so we can
 show an error message, redirect the user or do whatever
 business wants.
 
-![Figure 1: Use case](figures/figure1.png)
-
 In order to _execute_ this _use case_, we just
 need the idea identifier and the rating from
 the user. Two integers that would come from the user
@@ -251,87 +249,187 @@ Ok, but wait, what's the real benefit? It's easier to change
 from one framework to other, or execute our use case from
 another _delivery mechanism_. Let's see this point.
 
-## Rating a idea using the API
+## Rating an idea using the API
 
 During the day, your Product Owner comes to you and says:
- "by the way, a user should be able to rate an idea using
- our mobile app. I think we will need to update the API,
- could you do it for this sprint?". Here's the PO again.
- "No problem!". Business is impressed with your commitment.
+"by the way, a user should be able to rate an idea using
+our mobile app. I think we will need to update the API,
+could you do it for this sprint?". Here's the PO again.
+"No problem!". Business is impressed with your commitment.
 
 As Robert C. Martin says: "The Web is a delivery
 mechanism [...] Your system architecture should be as
 ignorant as possible about how it is to be delivered. You
- should be able to deliver it as a console app,
- or a web app, or even a web service app,
- without undue complication or change to the fundamental
- architecture".
+should be able to deliver it as a console app,
+or a web app, or even a web service app,
+without undue complication or change to the fundamental
+architecture".
 
-Your current API is built using Silex
+Your current API is built using Silex, the PHP micro-framework
+based on the Symfony2 Components. Let's go for it in Listing 7.
 
-[Voting using the API](listings/silex-api.txt)
+[Listing 7](listings/listing7.txt)
 
-"Man! I remember those 4 lines of code. They look exactly
+Is there anything familiar to you? Can you identify 
+some code that you have seen before? I'll give you a clue.
+
+~~~~
+$ideaRepository = new RedisIdeaRepository();
+$useCase = new RateIdeaUseCase($ideaRepository);
+$response = $useCase->execute(
+    new RateIdeaRequest($ideaId, $rating)
+);
+~~~~
+
+"Man! I remember those 3 lines of code. They look exactly
 the same as the web application". That's right,
-because the use case and the business rules remains the
-same, the code to run the business logic should be the same.
-We are just providing our users another way for rating a
-idea, what it's called another _delivery method_.
+because the use case encapsulates the business rules
+you just need to prepare the request, get the response
+and act accordingly.
+
+We are just providing our users another way for rating an
+idea, what it's called another _delivery mechanism_.
 
 The main difference is how we have created the
-`VotePostRequest` from. On the first
-example, it was from a ZF request and now from a Silex
-request.
+`RateIdeaRequest` from. On the first example,
+it was from a ZF request and now from a Silex
+request using `$request` object.
 
 ## Console app rating
 
-While you are testing this feature using the web or the api,
- you realize that it would be nice to have a command line
- to do it, so you'll be faster. Maybe you can thing about
-  a cronjob.
+Sometimes, some use case is going to be executed from
+a cronjob o command line. As an example, batch processing
+or some testing command lines for accelerating the
+development.
 
-Your current API is built using Silex <http://silex
-.sensiolabs.org/>
+While testing this feature using the web or the api,
+you realize that it would be nice to have a command line
+to do it, so you don't have to go through the browser.
 
-[Rating console command](listings/symfony-console.txt)
+If you are using shell scripts files, I suggest you
+to check the Symfony Console component. How would the
+code look like? 
 
-Man! I remember those 4 lines of code. They look exactly
-the same as the web application. That's right,
-because the use case and the business rules are the same,
-the code should be the same. We only have provided
-another delivery method. The main difference is how we
-have created the `VotePostRequest` from. On the first
-example, it was from a ZF request and now from a Silex
-request.
+[Listing 8](listings/listing8.txt)
 
-## Add author email notification
+Again those 3 lines of code. As before, the Use Case
+and its business logic remains untouched, we are just
+providing a new _delivery mechanism_. Congratulations, 
+you've discovered the _user side_ hexagon edge.
 
+There is too much to do. As you may heard, a real
+craftsman does TDD. We have already started our story
+so we must be ok with just testing after.
 
-
-## Testing your code
-
-Tomorrow, what about moving from MySQL to Redis?
-
-During the same sprint, your architect comes to you and says:
-?what about moving the voting story to redis? Could you do it for this sprint??, ?Yep, no problem!?. Man, you are on fire.
-
-<Code for the new Adapter>
-
-## Testing your code
+## Testing rating an idea use case
 
 Michael Feathers introduced a definition of legacy code
 as _code without tests_. You don't want your code to be
 legacy just born, do you?
 
+In order to test this UseCase object, you decide to
+start with the easiest part, what happen if the
+repository is not available? How can we generate such a
+behaviour? Do we stop our Redis server while running
+the unit tests? No. We need to have an object that
+has such behaviour. Let's use a _mock_ object in Listing 9.
 
+[Listing 9](listings/listing9.txt)
 
-[](listings/usecase-test.txt)
+Nice. `NotAvailableRepository` has the behaviour
+that we need and we can use it with `RateIdeaUseCase`
+because implements `IdeaRepository` interface.
 
-Bam! 100% Coverage. Maybe, next time we can do it using
-TDD so the test will come first. However,
-testing this feature was really easy.
+Next case to test is what happen if the idea is not
+in the repository. Listing 10 shows the code.
+
+[Listing 10](listings/listing10.txt)
+
+Here, we use the same strategy but with an `EmptyIdeaRepository`.
+It also implements the same interface but the implementation
+is returning always `null` regardless what identifier the 
+`find` method receives.
+
+Why are we testing this cases?, remember Kent Beck's words:
+"Test everything that could possibly break".
+
+Let's carry on with the rest of the feature. We need to check
+a special case that is related with read available but write
+not repository. Solution can be found in Listing 11.
+
+[Listing 11](listings/listing11.txt)
+
+Ok, now it's remaining the key part of the feature. We
+have different ways of testing this, we can write our
+own mock or use a mocking framework such as mockery
+or prophecy. Let's choose the first one. Another interesting
+exercise would be write this example and the previous
+ones using one of this frameworks.
+
+[Listing 12](listings/listing12.txt)
+
+Bam! 100% Coverage for the use case. Maybe, next time we
+can do it using TDD so the test will come first. However,
+testing this feature was really easy because how
+decoupling is promoted in this architecture.
+
+Maybe you are thinking what was that:
+
+~~~~
+$this->updateCalled = true;
+~~~~
+
+We need a way to guarantee that the update method
+has being called during the use case execution. This
+makes the trick. This _test double_ object is called a
+_spy_, cousin of _mocks_.
+
+When to use mocks? As a general rule, use mocks
+when crossing boundaries. In this case, we need mocks
+because we are crossing from the domain to the
+persistence boundary.
+
+What about testing the infrastructure?
+
+## Testing Infrastructure
+
+If you want to arrive to 100% coverage of your
+whole application you will have to test also
+your infrastructure. Before doing that, you have
+to know that those unit tests will be more coupled
+to your implementation than the business ones. That
+means that the probability to be broken with implementation
+details changes is higher. So it's a trade-off you
+will have to consider.
+
+So, if you want to continue, we need to do some
+modifications. We need to decouple even more. Let's
+see the code in Listing 13.
+
+[Listing 13](listings/listing13.txt)
+
+If we want to 100% unit test `RedisIdeaRepository`
+we need to be able to pass the `Predis\Connection`
+as a parameter to the repository without specifying
+TypeHinting so we can pass a mock to force the
+code flow necessary to cover all the cases.
+
+That forces us to update the Controller to 
+build the Redis connection, pass it to the repository
+and the result, pass it to the use case.
+
+Now, it's a matter about creating mocks, test cases
+and having fun doing asserts.
 
 ## Arggg, so many dependencies!
+
+Is that normal that I have so many dependencies
+to create by hand? No. 
+
+Yes, it is. Service Container
+
+
+## Recommended Path structure
 
 Is that normal that I have so many dependencies to create by hand?
 
@@ -345,13 +443,15 @@ Yes, it is. Service Container
 ## Migrating to new framework
 
 
-## Netx steps
+
+## Next steps
 
 DDD, leaking, factory, etc.
 
 
 
 ## Let's recap
+
 
 We encapsulate a user story business rules inside a
 Use Case or Interactor. We build the Use Case request
@@ -361,9 +461,6 @@ If our framework has a Dependency Injection component
 you can use it to simplify the code.
 
 
-
-Let?s review
-We have completely separate business logic from infrastructure.
 
 Different clients (web, api, console)
 Infrastructure (Database, Framework, etc.) agnostic

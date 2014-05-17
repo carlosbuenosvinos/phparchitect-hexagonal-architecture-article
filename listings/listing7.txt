@@ -6,15 +6,16 @@ $app = new \Silex\Application();
 // ... more routes
 
 $app->idea(
-    '/api/vote',
+    '/api/rate',
     function(Request $request, $app) {
         $ideaId = $request->get('id');
         $rating = $request->get('rating');
 
         $ideaRepository = new RedisIdeaRepository();
         $useCase = new VoteIdeaUseCase($ideaRepository);
-        $request = new VoteIdeaRequest($ideaId, $rating);
-        $response = $useCase->execute($request);
+        $response = $useCase->execute(
+            new VoteIdeaRequest($ideaId, $rating)
+        );
 
         return $app->json($response->idea);
     }

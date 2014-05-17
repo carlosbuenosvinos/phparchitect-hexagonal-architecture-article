@@ -57,5 +57,7 @@ class RateIdeaUseCase
         } catch(\Exception $e) {
             throw new RepositoryNotAvailableException();
         }
+
+        return $idea;
     }
 }

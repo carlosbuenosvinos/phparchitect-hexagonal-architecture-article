@@ -27,9 +27,10 @@ class VoteIdeaCommand extends Command
         $rating = $input->getArgument('rating');
 
         $ideaRepository = new RedisIdeaRepository();
-        $useCase = new VoteIdeaUseCase($ideaRepository);
-        $request = new VoteIdeaRequest($ideaId, $rating);
-        $response = $useCase->execute($request);
+        $useCase = new RateIdeaUseCase($ideaRepository);
+        $response = $useCase->execute(
+            new RateIdeaRequest($ideaId, $rating)
+        );
 
         $output->writeln('Done!');
     }
