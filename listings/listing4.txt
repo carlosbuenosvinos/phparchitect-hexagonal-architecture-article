@@ -1,6 +1,27 @@
 <?php
+
+/**
+ * Interface IdeaRepository
+ */
+interface IdeaRepository
+{
+    /**
+     * @param int $id
+     * @return null|Idea
+     */
+    public function find($id);
+
+    /**
+     * @param Idea $idea
+     */
+    public function update(Idea $idea);
+}
+
 class RedisIdeaRepository implements IdeaRepository
 {
+    /**
+     * @var \Predis\Client
+     */
     private $client;
 
     public function __construct()
@@ -10,11 +31,11 @@ class RedisIdeaRepository implements IdeaRepository
 
     /**
      * @param int $id
-     * @return null
+     * @return null|Idea
      */
     public function find($id)
     {
-        $idea = $this->client->get('idea_'.$id);
+        $idea = $this->client->get($this->getKey($id));
         if (!$idea) {
             return null;
         }
@@ -22,18 +43,20 @@ class RedisIdeaRepository implements IdeaRepository
         return $idea;
     }
 
-    /**
-     * @param Idea $idea
-     */
-    public function update($idea)
+    public function update(Idea $idea)
     {
-        $this->client->set('idea_'.$idea->getId(), $idea);
+        $this->client->set($this->getKey($idea->getId()), $idea);
+    }
+
+    private function getKey($id)
+    {
+        return 'idea:'.$id;
     }
 }
 
 class IdeaController extends Zend_Controller_Action
 {
-    public function voteAction()
+    public function rateAction()
     {
         $ideaId = $this->request->getParam('id');
         $rating = $this->request->getParam('rating');
@@ -45,7 +68,7 @@ class IdeaController extends Zend_Controller_Action
         }
 
         $idea->addVote($rating);
-        $ideaRepository->save($idea);
+        $ideaRepository->update($idea);
 
         $this->redirect('/idea/'.$ideaId);
     }

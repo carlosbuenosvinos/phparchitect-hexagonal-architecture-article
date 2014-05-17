@@ -47,10 +47,8 @@ class IdeaRepository
 
     /**
      * Updates an idea
-     *
-     * @param Idea $idea
      */
-    public function update($idea)
+    public function update(Idea $idea)
     {
         $data = array(
             'title' => $idea->getTitle(),
@@ -70,7 +68,7 @@ class IdeaRepository
  */
 class IdeaController extends Zend_Controller_Action
 {
-    public function voteAction()
+    public function rateAction()
     {
         $ideaId = $this->request->getParam('id');
         $rating = $this->request->getParam('rating');
@@ -81,7 +79,7 @@ class IdeaController extends Zend_Controller_Action
             throw new Exception('Idea does not exist');
         }
 
-        $idea->addVote($rating);
+        $idea->addRating($rating);
         $ideaRepository->update($idea);
 
         $this->redirect('/idea/'.$ideaId);

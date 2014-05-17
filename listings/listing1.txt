@@ -5,7 +5,7 @@
  */
 class IdeaController extends Zend_Controller_Action
 {
-    public function voteAction()
+    public function rateAction()
     {
         // Getting parameters from the request
         $ideaId = $this->request->getParam('id');

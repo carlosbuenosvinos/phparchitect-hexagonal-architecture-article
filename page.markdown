@@ -19,11 +19,12 @@ using real PHP examples.
 
 Your company is building a brainstorming system called
 _Idy_. Users add and rate ideas so the most interesting ones
-can be done. It's monday morning, another sprint is starting and
- you are reviewing some user stories with your team and your
-Product Owner. **"As a not logged user, I want to rate an
+can be implemented in a company. It's monday morning,
+another sprint is starting and you are reviewing some
+user stories with your team and your Product Owner.
+**"As a not logged user, I want to rate an
 idea and the author should be notified by email"**,
-that's a really important feature, isn't it?
+that's a really important one, isn't it?
 
 ## First approach
 
@@ -38,21 +39,24 @@ as finding the idea by its identifier in the ideas
 repository, where all the ideas live, add the rating,
 recalculate the average and save the idea back. If
 the idea does not exist or the repository is not
-available we should throw an exception.
+available we should throw an exception so we can
+show an error message, redirect the user or do whatever
+business wants.
 
 ![Figure 1: Use case](figures/figure1.png)
 
 In order to _execute_ this _use case_, we just
 need the idea identifier and the rating from
-the user.
+the user. Two integers that would come from the user
+request.
 
 Your company web application is dealing with a
 Zend Framework 1 legacy application. As most of
-the companies, parts of your application are
-newer, more SOLID and others just a big ball of
-mud. It doesn't really matter what framework are
-you using, the following steps apply in the same
-way.
+the companies, parts of your app are newer,
+more SOLID and others just a big ball of
+mud. However, you know that it's not a matter of
+what framework are you using, it's about of writing
+clean code than .
 
 You're trying to apply some Agile principles
 you remember from your last conference, how it was,
@@ -68,52 +72,54 @@ it's probable that you are also using an ORM. Maybe done
 by yourself or any of the existing ones such as Doctrine,
 Eloquent, Zend\DB, etc. If it's the case, you are one step
 further from those who have some Database connection object
-but don't be say victory yet.
+but don't count your chickens before they're hatched.
 
 For newbies, Listing 1 code just works. However, if you
 take a closer look to the Controller, you'll see more
 than business rules, you'll also see how your web framework
 routes a request into your business rules, references to
-the database or how to connect to it. You see references
-to your **infrastructure**.
+the database or how to connect to it. So close, you see
+references to your **infrastructure**.
 
 Infrastructure is the **detail that makes your business rules
 work**. At last, we need some way to get to them (api, web, console
 apps, etc.) or we need some physical place to store our ideas
 (memory, database, nosql, etc.). However, we should be able to
 exchange any of these pieces with another that behaves in the
-same way but with different implementations. What about to
+same way but with different implementations. What about
 starting with the Database access?
 
 All those `Zend_DB_Adapter` connection (or straight mysql commands
-if it's the case) are asking for be promoted into some sort
+if it's your case) are asking for be promoted into some sort
 of object that encapsulates fetching and persisting Idea objects.
 They are asking for being a Repository.
 
-## Repositories
+## Repositories and the Persistence Edge
 
 Whether there is a change in the business rules
-or in the infrastructure (migrating to NoSQL or changing
-the Database engine) we must edit the same piece of code.
-Believe, in CS, you don't want people touching the same
-piece of code for different reasons.
+or in the infrastructure, we must edit the same piece of code.
+Believe me, in CS, you don't want people touching the same
+piece of code for different reasons. Make your functions
+do one and just one thing so it's less probable having people
+messing around with the same piece of code. You should 
+take a look to the Single Responsability Principle (SRP).
 
-If it's the case, we are technically not conforming the
-Single Responsability Principle (SRP). Our code has
-different reasons to be changed.
+Listing 1 is clearly this case. If we want to move to Redis
+or add the author notification feature, you'll have to update
+ the `rateAction` method.
 
-So we should decouple our code and encapsulate the
+So, we must decouple our code and encapsulate the
 responsability to deal with fetching and persisting
 ideas into another object. The best way, as explained
-before, is using a Repository. Let's see what you can do
-about it in Listing 2.
+before, is using a Repository. Challenged accepted!
+Let's see the results in Listing 2.
 
 [Listing 2](listings/listing2.txt)
 
-The result is nicer. The `voteAction` of the `IdeaController`
-is more understandable. When read it talks about business
+The result is nicer. The `rateAction` of the `IdeaController`
+is more understandable. When read, it talks about business
 rules. `IdeaRepository` is a **business concept**. When talking
-with business guys they understand what an `IdeaRepository` is:
+with business guys, they understand what an `IdeaRepository` is:
 A place where I put Ideas and get them.
 
 A Repository "mediates between the domain and data mapping
@@ -123,7 +129,7 @@ domain objects." as found in Martin Fowler patterns catalog.
 If you are already using an ORM such as Doctrine, your current
 repositories extend from an `EntityRepository`. If you need to
  get one of those repositories, you ask to Doctrine
- `EntityManager` to do the job. The resulting code would be
+ `EntityManager` do the job. The resulting code would be
 the same, except for finding in the controller action an access
 to the `EntityManager` for getting the `IdeaRepository`.
 
@@ -132,11 +138,12 @@ of our hexagon, the _persistence_ edge. However, this side is
 not well drawn, there is still some relationship between what
 an `IdeaRepository` is and how it's implemented.
 
-In order to make this separation stronger and 100% defined
-we need an additional step. We need to explicitly decouple
+In order to make an effective separation between our
+_application boundary_ and the __infrastructure boundary__
+we need an additional step. We need explicitly decouple
 behaviour from implementation using some sort of interface.
 
-## Decouple business and infrastructure
+## Decoupling Business and Persistence
 
 Have you ever experienced the situation when you
 start talking to your Product Owner, Business Analyst
@@ -147,24 +154,46 @@ any idea about what you were talking about.
 
 The truth is that they don't care, but it's ok. If
 you decide to store the ideas in a MySQL server, Redis
-or SQLite is your problem, not their. From a business
-standpoint, **your infrastructure is a detail**. Business
-rules are not going to change whether you use Symfony
+or SQLite is your problem, not their. Remember, from a
+business standpoint, **your infrastructure is a detail**.
+Business rules are not going to change whether you use Symfony
 or Zend Framework, MySQL or PostgreSQL, REST or SOAP, etc.
 
 That's why it's important to decouple our IdeaRepository
 from its implementation. The easiest way is to use a proper
-interface. Let's take a look to Listing 3.
+interface. How could we that? Let's take a look to Listing 3.
 
 [Listing 3](listings/listing3.txt)
 
-## Moving to Redis or Sqlite
+Easy, isn't it? We have extracted the `IdeaRepository`
+behaviour into an interface, rename the IdeaRepository into
+`MySQLIdeaRepository` and update the `rateAction` to 
+use our `MySQLIdeaRepository`. But what's the benefit?
+
+We can now exchange the repository used in the controller
+with any that implements the same interface. So, let's try
+another different implementation.
+
+## Migrating our Persistence to Redis
+
+During the sprint and after talking to some mates, you
+realize that using a NoSQL strategy could improve the
+performance of your feature. Redis is one of your
+best friends. Go for it and show me your Listing 4.
 
 [Listing 4](listings/listing4.txt)
 
-Just for fun, what about moving to SQLite.
+Easy again. You've created a `RedisIdeaRepository`
+that implements `IdeaRepository` interface and we
+have decided to use Predis as a connection manager.
+Code looks smaller, easier and faster. But what about
+the controller? It remains the same, we have just
+change what repository to use, but it was just one line
+of code.
 
-[Listing 5](listings/listing5.txt)
+As an exercise for the reader, try to create the
+IdeaRepository for SQLite, a file or a memory
+using arrays.
 
 ## Decouple framework and business
 
