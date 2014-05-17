@@ -25,7 +25,7 @@ class RateIdeaUseCase
     {
         try {
             $idea = $this->ideaRepository->find($ideaId);
-        } catch(\Exception $e) {
+        } catch(Exception $e) {
             throw new RepositoryNotAvailableException();
         }
 
@@ -36,13 +36,13 @@ class RateIdeaUseCase
         try {
             $idea->addRating($rating);
             $this->ideaRepository->update($idea);
-        } catch(\Exception $e) {
+        } catch(Exception $e) {
             throw new RepositoryNotAvailableException();
         }
 
         try {
             $this->authorNotifier($idea->getAuthor());
-        } catch(\Exception $e) {
+        } catch(Exception $e) {
             throw new NotificationNotSentException();
         }
 
