@@ -335,7 +335,7 @@ Michael Feathers introduced a definition of legacy code
 as _code without tests_. You don't want your code to be
 legacy just born, do you?
 
-In order to unit-test this UseCase object, you decide to
+In order to unit test this UseCase object, you decide to
 start with the easiest part, what happens if the
 repository is not available? How can we generate such a
 behavior? Do we stop our Redis server while running
