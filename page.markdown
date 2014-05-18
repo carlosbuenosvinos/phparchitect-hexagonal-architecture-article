@@ -101,10 +101,15 @@ piece of code for different reasons. Try to make your functions
 do one and just one thing so it's less probable having people
 messing around with the same piece of code. You can learn more
 about this having a look to the Single Responsibility Principle (SRP).
+For more information about this principle:
+<http://www.objectmentor.com/resources/articles/srp.pdf>
 
 Listing 1 is clearly this case. If we want to move to Redis
 or add the author notification feature, you'll have to update
-the `rateAction` method.
+the `rateAction` method. Chances to affect aspects of the
+`rateAction` not related with the one updating are high.
+Listing 1 code is fragile. If in your team is common to hear
+"If it works, don't touch it", SRP is missing.
 
 So, we must decouple our code and encapsulate the
 responsibility of dealing with fetching and persisting
