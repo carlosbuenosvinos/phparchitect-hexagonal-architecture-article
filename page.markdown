@@ -54,7 +54,8 @@ the companies, parts of your app are newer,
 more SOLID and others are just a big ball of
 mud. However, you know that it does not matter at all
 which framework you are using, it's all about writing
-clean code.
+clean code that makes maintenance a low cost task
+for you company.
 
 You're trying to apply some Agile principles
 you remember from your last conference, how it was,
