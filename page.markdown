@@ -445,7 +445,7 @@ to understand but if you need more information, take
 a look to the Symfony Service Container Component
 site in <http://symfony.com/doc/current/book/service_container.html>
 
-## Messaging hexagon edge
+## Messaging Hexagon Edge
 
 Are we forgetting anything? "the author should be
 notified by email", yeah! That's true. Let's see
