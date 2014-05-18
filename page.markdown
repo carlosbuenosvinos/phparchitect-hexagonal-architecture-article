@@ -506,7 +506,7 @@ can also be covered. Enjoy the good job done.
 
 In almost all the blogs and books you will find
 drawings about concentric circles representing different
-areas of software. As Robert C. Marting explains
+areas of software. As Robert C. Martin explains
 in his "Clean Architecture" post, the outer circle
 is where your infrastructure resides. The inner circle is where
 your Entities live. The overriding rule that makes this
