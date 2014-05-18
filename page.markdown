@@ -451,27 +451,38 @@ to understand but if you need more information, take
 a look to the Symfony Service Container Component
 site in <http://symfony.com/doc/current/book/service_container.html>
 
-## Messaging Hexagon Edge
+## Domain Services and Notification Hexagon Edge
 
 Are we forgetting anything? "the author should be
 notified by email", yeah! That's true. Let's see
 in Listing 15 how we have updated the UseCase for
 doing the job.
 
-As you realize, we have added a new parameter for
-passing a Service that will send the email to the
-author. This is the `port` in the "Ports and Adapters"
-naming. We have also updated the business rules in
-the `execute` method.
-
 [Listing 15](listings/listing14.txt)
 
+As you realize, we have added a new parameter for
+passing `AuthorNotifier` Service that will send
+the email to the author. This is the _port_ in
+the "Ports and Adapters" naming. We have also
+updated the business rules in the `execute` method.
+
+Repositories are not the only objects that may access
+your infrastructure and should be decoupled using
+interfaces or abstract classes. Domain Services can
+too. When there is a behavior not clearly owned by
+just one Entity in your domain, you should create
+a Domain Service. A typical patter is to write
+an abstract Domain Service that has some concrete
+implementation and some other abstract methods that
+ the _adapter_ will implement.
+
 As an exercise, define the implementation details
-for the AuthorNotifier abstract service. In this case,
-this service will have business rules implementation
-and everything related to the infrastructure will
-be abstract so you can add the _adapter_. Options are
+for the AuthorNotifier abstract service. Options are
 SwiftMailer o just plain `mail` calls. It's up to you.
+
+## Hexagonal Architecture
+
+.
 
 ## Let's recap
 
