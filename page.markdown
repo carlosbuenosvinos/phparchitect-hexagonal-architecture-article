@@ -49,13 +49,12 @@ the user. Two integers that would come from the user
 request.
 
 Your company web application is dealing with a
-Zend Framework 1 legacy application. As most of
-the companies, parts of your app are newer,
-more SOLID and others are just a big ball of
-mud. However, you know that it does not matter at all
-which framework you are using, it's all about writing
-clean code that makes maintenance a low cost task
-for you company.
+Zend Framework 1 legacy application. As most of companies, 
+probably some parts of your app may be newer, more SOLID, 
+and others may just be a big ball of mud. However, you know that 
+it does not matter at all which framework you are using, 
+it's all about writing clean code that makes maintenance 
+a low cost task for you company.
 
 You're trying to apply some Agile principles
 you remember from your last conference, how it was,
@@ -336,7 +335,7 @@ Michael Feathers introduced a definition of legacy code
 as _code without tests_. You don't want your code to be
 legacy just born, do you?
 
-In order to test this UseCase object, you decide to
+In order to unit-test this UseCase object, you decide to
 start with the easiest part, what happens if the
 repository is not available? How can we generate such a
 behavior? Do we stop our Redis server while running
@@ -461,7 +460,7 @@ notified by email", yeah! That's true. Let's see
 in Listing 15 how we have updated the UseCase for
 doing the job.
 
-[Listing 15](listings/listing14.txt)
+[Listing 15](listings/listing15.txt)
 
 As you realize, we have added a new parameter for
 passing `AuthorNotifier` Service that will send
