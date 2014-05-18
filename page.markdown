@@ -197,7 +197,10 @@ of code.
 
 As an exercise for the reader, try to create the
 IdeaRepository for SQLite, a file or an in-memory
-implementation using arrays.
+implementation using arrays. Extra points if you
+think about how ORM Repositories fit with Domain
+Repositories and how ORM _@annotations_ affects
+to this architecture.
 
 ## Decouple Business and Web Framework
 
@@ -480,10 +483,6 @@ As an exercise, define the implementation details
 for the AuthorNotifier abstract service. Options are
 SwiftMailer o just plain `mail` calls. It's up to you.
 
-## Hexagonal Architecture
-
-.
-
 ## Let's recap
 
 In order to have a _clean architecture_ that helps you
@@ -502,7 +501,20 @@ the features from different clients (web, api, console, etc.)
 
 For testing, play with mocks that behave like all
 the interfaces defined so special cases or error flows
-can also be covered. Go home and enjoy.
+can also be covered. Enjoy the good job done.
+
+## Hexagonal Architecture
+
+In almost all the blogs and books you will find
+drawings about concentric circles representing different
+areas of software. As Robert C. Marting explains
+in his "Clean Architecture" post, the outer circle
+is where your infrastructure resides. The inner circle is where
+your Entities live. The overriding rule that makes this
+architecture work is **The Dependency Rule**. This rule
+says that source code dependencies can only point
+inwards. Nothing in an inner circle can know anything
+at all about something in an outer circle.
 
 ## Key points
 
