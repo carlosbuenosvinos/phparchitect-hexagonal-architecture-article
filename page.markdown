@@ -80,7 +80,7 @@ the database or how to connect to it. So close, you see
 references to your **infrastructure**.
 
 Infrastructure is the **detail that makes your business rules
-work**. Obviously, we need some way to get to them (api, web, console
+work**. Obviously, we need some way to get to them (API, web, console
 apps, etc.) and effectively we need some physical place to store our ideas
 (memory, database, NoSQL, etc.). However, we should be able to
 exchange any of these pieces with another that behaves in the
@@ -310,7 +310,7 @@ a Cron job or the command line. As examples, batch processing
 or some testing command lines to accelerate the
 development.
 
-While testing this feature using the web or the api,
+While testing this feature using the web or the API,
 you realize that it would be nice to have a command line
 to do it, so you don't have to go through the browser.
 
@@ -496,7 +496,7 @@ component you can use it to simplify the code.
 
 The same use case objects can be used from different
 _delivery mechanisms_ in order to allow users access
-the features from different clients (web, api, console, etc.)
+the features from different clients (web, API, console, etc.)
 
 For testing, play with mocks that behave like all
 the interfaces defined so special cases or error flows
