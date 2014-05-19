@@ -16,7 +16,7 @@ class RateIdeaUseCaseTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertSame(5, $response->idea->getRating());
-        $this->assertTrue(5, $ideaRepository->updateCalled);
+        $this->assertTrue($ideaRepository->updateCalled);
     }
 }
 
