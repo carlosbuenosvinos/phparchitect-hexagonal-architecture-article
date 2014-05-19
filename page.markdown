@@ -301,7 +301,7 @@ idea, what it's called another _delivery mechanism_.
 The main difference is how we have created the
 `RateIdeaRequest` from. In the first example,
 it was from a ZF request and now it is from a Silex
-request using `$request` object.
+request using the parameters matched in the route.
 
 ## Console app rating
 
