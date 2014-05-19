@@ -417,7 +417,7 @@ see the code in Listing 13.
 [Listing 13](listings/listing13.txt)
 
 If we want to 100% unit test `RedisIdeaRepository`
-we need to be able to pass the `Predis\Connection`
+we need to be able to pass the `Predis\Client`
 as a parameter to the repository without specifying
 TypeHinting so we can pass a mock to force the
 code flow necessary to cover all the cases.
@@ -447,7 +447,9 @@ the container, that's why it is inheriting from a new
 base controller `ContainerAwareController` that has a
 `get` method to retrieve each of the services contained.
 
-In Listing 14, you can also find the XML file used
+[Listing 15](listings/listing15.txt)
+
+In Listing 15, you can also find the XML file used
 to configure the Service Container. It's really easy
 to understand but if you need more information, take
 a look to the Symfony Service Container Component
@@ -457,10 +459,10 @@ site in <http://symfony.com/doc/current/book/service_container.html>
 
 Are we forgetting anything? "the author should be
 notified by email", yeah! That's true. Let's see
-in Listing 15 how we have updated the UseCase for
+in Listing 16 how we have updated the UseCase for
 doing the job.
 
-[Listing 15](listings/listing15.txt)
+[Listing 16](listings/listing16.txt)
 
 As you realize, we have added a new parameter for
 passing `AuthorNotifier` Service that will send

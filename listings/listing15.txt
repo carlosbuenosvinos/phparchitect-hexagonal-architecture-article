@@ -1,51 +1,21 @@
-<?php
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+           http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service
+            id="rate_idea_use_case"
+            class="RateIdeaUseCase">
+            <argument type="service" id="idea_repository" />
+        </service>
 
-class RateIdeaUseCase
-{
-    /**
-     * @var IdeaRepository
-     */
-    private $ideaRepository;
-
-    /**
-     * @var AuthorNotifier
-     */
-    private $authorNotifier;
-
-    public function __construct(
-        IdeaRepository $ideaRepository
-        AuthorNotifier $authorNotifier
-    )
-    {
-        $this->ideaRepository = $ideaRepository;
-        $this->authorNotifier = $authorNotifier;
-    }
-
-    public function execute(RateIdeaRequest $request)
-    {
-        try {
-            $idea = $this->ideaRepository->find($ideaId);
-        } catch(Exception $e) {
-            throw new RepositoryNotAvailableException();
-        }
-
-        if (!$idea) {
-            throw new IdeaDoesNotExistException();
-        }
-
-        try {
-            $idea->addRating($rating);
-            $this->ideaRepository->update($idea);
-        } catch(Exception $e) {
-            throw new RepositoryNotAvailableException();
-        }
-
-        try {
-            $this->authorNotifier($idea->getAuthor());
-        } catch(Exception $e) {
-            throw new NotificationNotSentException();
-        }
-
-        return $idea;
-    }
-}
+        <service
+            id="idea_repository"
+            class="RedisIdeaRepository">
+            <argument type="service">
+                <service class="Predis\Client" />
+            </argument>
+        </service>
+    </services>
+</container>

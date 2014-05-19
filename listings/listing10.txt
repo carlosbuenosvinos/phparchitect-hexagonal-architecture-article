@@ -7,7 +7,7 @@ class RateIdeaUseCaseTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function whenIdeaDoesNotExistAnExceptionShoulBeThrown()
+    public function whenIdeaDoesNotExistAnExceptionShouldBeThrown()
     {
         $this->setExpectedException('IdeaDoesNotExistException');
         $ideaRepository = new EmptyIdeaRepository();

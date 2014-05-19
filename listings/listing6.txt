@@ -1,4 +1,22 @@
 <?php
+
+class IdeaController extends Zend_Controller_Action
+{
+    public function rateAction()
+    {
+        $ideaId = $this->request->getParam('id');
+        $rating = $this->request->getParam('rating');
+
+        $ideaRepository = new RedisIdeaRepository();
+        $useCase = new VoteIdeaUseCase($ideaRepository);
+        $response = $useCase->execute(
+            new VoteIdeaRequest($ideaId, $rating)
+        );
+
+        $this->redirect('/idea/'.$response->idea->getId());
+    }
+}
+
 class RateIdeaRequest
 {
     /**
@@ -28,23 +46,6 @@ class RateIdeaResponse
     public function __construct(Idea $idea)
     {
         $this->idea = $idea;
-    }
-}
-
-class IdeaController extends Zend_Controller_Action
-{
-    public function rateAction()
-    {
-        $ideaId = $this->request->getParam('id');
-        $rating = $this->request->getParam('rating');
-
-        $ideaRepository = new RedisIdeaRepository();
-        $useCase = new VoteIdeaUseCase($ideaRepository);
-        $response = $useCase->execute(
-            new VoteIdeaRequest($ideaId, $rating)
-        );
-
-        $this->redirect('/idea/'.$response->idea->getId());
     }
 }
 

@@ -1,8 +1,5 @@
 <?php
 
-/**
- * Class IdeaController
- */
 class IdeaController extends Zend_Controller_Action
 {
     public function rateAction()
@@ -23,9 +20,6 @@ class IdeaController extends Zend_Controller_Action
     }
 }
 
-/**
- * Class IdeaRepository
- */
 class IdeaRepository
 {
     /**
@@ -68,9 +62,6 @@ class IdeaRepository
         return $idea;
     }
 
-    /**
-     * Updates an idea
-     */
     public function update(Idea $idea)
     {
         $data = array(

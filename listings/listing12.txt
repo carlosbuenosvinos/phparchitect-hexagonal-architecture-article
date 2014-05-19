@@ -29,7 +29,7 @@ class OneIdeaRepository implements IdeaRepository
         $idea = new Idea();
         $idea->setId(1);
         $idea->setTitle('Subscribe to php[architect]');
-        $idea->setDescription('');
+        $idea->setDescription('Just buy it!');
         $idea->setRating(5);
         $idea->setVotes(10);
         $idea->setAuthor('hi@carlos.io');

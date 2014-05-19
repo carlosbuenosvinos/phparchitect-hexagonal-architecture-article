@@ -1,8 +1,5 @@
 <?php
 
-/**
- * Class IdeaController
- */
 class IdeaController extends Zend_Controller_Action
 {
     public function rateAction()
@@ -23,13 +20,10 @@ class IdeaController extends Zend_Controller_Action
     }
 }
 
-/**
- * Interface IdeaRepository
- */
 interface IdeaRepository
 {
     /**
-     * Finds an Idea by id
+     * Finds an idea by id
      *
      * @param int $id
      * @return null|Idea
@@ -44,9 +38,6 @@ interface IdeaRepository
     public function update(Idea $idea);
 }
 
-/**
- * Class IdeaRepository
- */
 class MySQLIdeaRepository implements IdeaRepository
 {
     // ...

@@ -5,7 +5,7 @@ class RateIdeaUseCaseTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function whenRepositoryNotAvailableAnExceptionShoulBeThrown()
+    public function whenRepositoryNotAvailableAnExceptionShouldBeThrown()
     {
         $this->setExpectedException('NotAvailableRepositoryException');
         $ideaRepository = new NotAvailableRepository();

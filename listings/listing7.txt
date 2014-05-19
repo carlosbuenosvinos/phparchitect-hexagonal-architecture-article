@@ -1,16 +1,14 @@
 <?php
+
 require_once __DIR__.'/../vendor/autoload.php';
 
 $app = new \Silex\Application();
 
 // ... more routes
 
-$app->idea(
-    '/api/rate',
-    function(Request $request, $app) {
-        $ideaId = $request->get('id');
-        $rating = $request->get('rating');
-
+$app->get(
+    '/api/rate/idea/{ideaId}/rating/{rating}',
+    function($ideaId, $rating) use ($app) {
         $ideaRepository = new RedisIdeaRepository();
         $useCase = new VoteIdeaUseCase($ideaRepository);
         $response = $useCase->execute(

@@ -20,6 +20,11 @@ class IdeaController extends Zend_Controller_Action
     }
 }
 
+interface IdeaRepository
+{
+    // ...
+}
+
 class RedisIdeaRepository implements IdeaRepository
 {
     /**
@@ -51,9 +56,4 @@ class RedisIdeaRepository implements IdeaRepository
     {
         return 'idea:'.$id;
     }
-}
-
-interface IdeaRepository
-{
-    // ...
 }

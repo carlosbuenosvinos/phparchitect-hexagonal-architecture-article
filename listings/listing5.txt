@@ -37,7 +37,8 @@ class RateIdeaUseCase
      *
      * @param int $ideaId
      * @param int $rating
-     * @throws Exception
+     * @throws RepositoryNotAvailableException
+     * @throws IdeaDoesNotExistException
      */
     public function execute($ideaId, $rating)
     {

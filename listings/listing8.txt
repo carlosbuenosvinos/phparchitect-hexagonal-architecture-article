@@ -1,4 +1,5 @@
 <?php
+
 namespace Idy\Console\Command;
 
 use Symfony\Component\Console\Command\Command;
@@ -12,7 +13,7 @@ class VoteIdeaCommand extends Command
     {
         $this
             ->setName('idea:rate')
-            ->setDescription('Greet someone')
+            ->setDescription('Rate an idea')
             ->addArgument('id', InputArgument::REQUIRED)
             ->addArgument('rating', InputArgument::REQUIRED)
         ;
