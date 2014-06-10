@@ -44,12 +44,15 @@ class RedisIdeaRepository implements IdeaRepository
             return null;
         }
 
-        return $idea;
+        return unserialize($idea);
     }
 
     public function update(Idea $idea)
     {
-        $this->client->set($this->getKey($idea->getId()), $idea);
+        $this->client->set(
+            $this->getKey($idea->getId()),
+            serialize($idea)
+        );
     }
 
     private function getKey($id)
