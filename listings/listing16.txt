@@ -41,7 +41,7 @@ class RateIdeaUseCase
         }
 
         try {
-            $this->authorNotifier($idea->getAuthor());
+            $this->authorNotifier($idea->getAuthor())->notify();
         } catch(Exception $e) {
             throw new NotificationNotSentException();
         }

@@ -10,9 +10,9 @@ $app->get(
     '/api/rate/idea/{ideaId}/rating/{rating}',
     function($ideaId, $rating) use ($app) {
         $ideaRepository = new RedisIdeaRepository();
-        $useCase = new VoteIdeaUseCase($ideaRepository);
+        $useCase = new RateIdeaUseCase($ideaRepository);
         $response = $useCase->execute(
-            new VoteIdeaRequest($ideaId, $rating)
+            new RateIdeaRequest($ideaId, $rating)
         );
 
         return $app->json($response->idea);

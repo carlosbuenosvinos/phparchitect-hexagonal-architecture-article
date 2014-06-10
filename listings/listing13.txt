@@ -7,14 +7,14 @@ class IdeaController extends Zend_Controller_Action
         $ideaId = $this->request->getParam('id');
         $rating = $this->request->getParam('rating');
 
-        $useCase = new VoteIdeaUseCase(
+        $useCase = new RateIdeaUseCase(
             new RedisIdeaRepository(
                 new \Predis\Client()
             )
         );
 
         $response = $useCase->execute(
-            new VoteIdeaRequest($ideaId, $rating)
+            new RateIdeaRequest($ideaId, $rating)
         );
 
         $this->redirect('/idea/'.$response->idea->getId());
