@@ -9,7 +9,7 @@ class IdeaController extends ContainerAwareController
 
         $useCase = $this->get('rate_idea_use_case');
         $response = $useCase->execute(
-            new VoteIdeaRequest($ideaId, $rating)
+            new RateIdeaRequest($ideaId, $rating)
         );
 
         $this->redirect('/idea/'.$response->idea->getId());
