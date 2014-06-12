@@ -1,3 +1,0 @@
-"Your Database is a detail"
-"Decouple your infrastructure from your Business rules using interfaces or abstract classes"
-"Persistence, Messaging, User access or UI are common hexagon edges"
