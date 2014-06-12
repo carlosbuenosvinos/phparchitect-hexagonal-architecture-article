@@ -27,11 +27,10 @@ class RedisIdeaRepository implements IdeaRepository
 
     public function __construct($client)
     {
-        $this->client = $client
+        $this->client = $client;
     }
 
     // ...
-
     public function find($id)
     {
         $idea = $this->client->get($this->getKey($id));

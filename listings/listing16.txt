@@ -13,7 +13,7 @@ class RateIdeaUseCase
     private $authorNotifier;
 
     public function __construct(
-        IdeaRepository $ideaRepository
+        IdeaRepository $ideaRepository,
         AuthorNotifier $authorNotifier
     )
     {
@@ -23,6 +23,9 @@ class RateIdeaUseCase
 
     public function execute(RateIdeaRequest $request)
     {
+        $ideaId = $request->ideaId;
+        $rating = $request->rating;
+
         try {
             $idea = $this->ideaRepository->find($ideaId);
         } catch(Exception $e) {
@@ -41,7 +44,9 @@ class RateIdeaUseCase
         }
 
         try {
-            $this->authorNotifier($idea->getAuthor())->notify();
+            $this->authorNotifier->notify(
+                $idea->getAuthor()
+            );
         } catch(Exception $e) {
             throw new NotificationNotSentException();
         }
